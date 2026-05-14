@@ -1,0 +1,1344 @@
+
+
+===== PAGE 1 =====
+Vol.:(0123456789)
+ Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w
+Discover Public Health
+Review
+A comprehensive survey on secure healthcare data processing 
+with homomorphic encryption: attacks and defenses
+Chian Hui Lee1 · King Hann Lim1 · Sivaraman Eswaran1
+Received: 27 September 2024 / Accepted: 17 March 2025
+© The Author(s) 2025  OPEN
+Abstract
+Healthcare data has risen as a top target for cyberattacks due to the rich amount of sensitive patient information. This 
+negatively affects the potential of advanced analytics and collaborative research in healthcare. Homomorphic encryp -
+tion (HE) has emerged as a promising technology for securing sensitive healthcare data while enabling computations 
+on encrypted information. This paper conducts a background survey of HE and its various types. It discusses Partially 
+Homomorphic Encryption (PHE), Somewhat Homomorphic Encryption (SHE), Fully Homomorphic Encryption (FHE) and 
+Fully Leveled Homomorphic Encryption (FLHE). A critical analysis of these encryption paradigms’ theoretical founda -
+tions, implementation schemes, and practical applications in healthcare contexts is presented. The survey encompasses 
+diverse healthcare domains. It demonstrates HE’s versatility in securing electronic health records (EHRs), enabling privacy-
+preserving genomic data analysis, protecting medical imaging, facilitating privacy-preserving machine learning (ML), 
+supporting secure federated learning, ensuring confidentiality in clinical trials, and enhancing remote monitoring and 
+telehealth services. A comprehensive examination of potential vulnerabilities in HE systems is conducted. The research 
+systematically investigates various attack vectors, including side-channel attacks, key recovery attacks, chosen plaintext 
+attacks (CPA), chosen ciphertext attacks (CCA), known plaintext attacks (KPA), fault injection attacks (FIA), and lattice 
+attacks. A detailed analysis of potential defense mechanisms and mitigation strategies is provided for each identified 
+threat. The analysis underscores the importance of HE for long-term security and sustainability in healthcare systems.
+Keywords Homomorphic encryption · Healthcare security · Cryptanalysis · Federated learning · Privacy-preserving 
+computation · Genomic data protection
+1 Introduction
+The digitisation of patient records and the increasing reliance on data-driven medical applications have exponentially 
+amplified health-related data volume and sensitivity [1 ]. The advent of technologies such as EHRs [2 –4], telemedicine 
+[5, 6], and personalised medicine [7, 8] underscores the necessity for robust data privacy and security mechanisms. The 
+importance of safeguarding patient information from unauthorised access and ensuring health data’s confidentiality, 
+integrity, and availability has never been more critical.
+HE emerges as a revolutionary cryptographic c solution poised to address these pressing concerns. HE allows com-
+putations to be performed directly on encrypted data, unlike traditional encryption data, which requires data to be 
+ * Chian Hui Lee, lchianhui@postgrad.curtin.edu.my;  * King Hann Lim, glkhann@curtin.edu.my;  * Sivaraman Eswaran, sivaraman.
+eswaran@curtin.edu.my | 1Department of Electrical and Computer Engineering, Curtin University Malaysia, CDT 250, Miri 98009, Sarawak, 
+Malaysia.
+
+===== PAGE 2 =====
+Vol:.(1234567890)
+Review  
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w
+decrypted before processing. HE computations performed on encrypted data will generate encrypted results that match 
+the output of operations performed on plaintext. [9 ]. This capability balances data usability and privacy while enabling 
+secure data processing in untrusted environments [10]. Data can be processed without compromising the confidentiality 
+of sensitive health information in the cloud [11]. Researchers can perform statistical analyses, predictive modelling, and 
+personal health information processing on encrypted data without decryption.
+The development of HE began with the PHE concept, moving on to SHE and then FHE. PHE schemes need more flex-
+ibility and expressiveness for computations since they allow only a limited number of operations on encrypted data. This 
+limitation led to the development of SHE, which expanded the range of permissible operations. However, it still imposed 
+constraints on the complexity and number of computations. The breakthrough came with the concept of FHE, which 
+enables arbitrary computations on encrypted data without any limitations. HE is emerging as an important cryptogra-
+phy technique in the Healthcare domain. The application of HE in healthcare aligns with the principles of sustainable 
+development. HE can accelerate medical research by promoting secure and ethical data sharing. Improving medical 
+research leads to the development of innovative treatments and diagnostic tools. HE improves global health outcomes 
+and promotes well-being, aligning with the United Nations’ Sustainable Development Goals.
+HE has various types due to the development history and the usage of each homomorphic algorithm. They are PHE, 
+SHE, FHE, and fully levelled homomorphic encryption. Each of these types is explored along with its corresponding 
+cryptographic schemes. This work investigates the role of HE in healthcare and emphasises its potential to enhance data 
+security and privacy. It demonstrates how HE safeguards sensitive medical information and facilitates secure computa-
+tions on encrypted data. The discussion highlights the contribution of HE to sustainable development in healthcare. It 
+examines the use of HE in the healthcare domain, including secure EHRs and ML in healthcare. The paper also explores 
+known attacks and potential threats towards HE and discusses countermeasures for these risks. The analysis underscores 
+the significance of HE for long-term security and sustainability in healthcare systems.
+The remainder of this work is structured as follows: Section 2 examines various HE types. Section 3 explores the appli-
+cations of HE within the healthcare sector. Section 4 addresses potential attacks on HE and possible defensive strategies 
+against these threats. Section  5 discusses open research directions and future work. Finally, Section  6 concludes the 
+paper, summarising the key findings and contributions.
+2  Overview of homomorphic encryption
+HE is a cryptographic technique that allows computations on encrypted data without decrypting it. It preserves the 
+privacy and security of the data throughout the computation process. HE is particularly valuable in medical imaging, 
+genomics data analysis, clinic trails, and secure remote monitoring [12– 15]. HE addresses the challenge of maintaining 
+patient privacy while allowing advanced data processing and analysis by enabling secure computations on sensitive 
+patient data. Researchers can perform complex analyses on encrypted genomics datasets to identify genetic markers 
+associated with diseases without exposing the raw data [16]. Other than that, HE allows for processing encrypted MRI or 
+CT scans in medical imaging to assist in diagnosis and treatment planning while keeping the images confidential [13]. 
+Studies have demonstrated that HE can protect patient data, enable secure collaborative research, and enhance the 
+development of precision medicine without compromising data privacy [17, 18].
+2.1  Types of homomorphic encryption
+HE has been separated into four types to cater to specific computational needs and applications: PHE, SHE, FHE, and FLHE 
+for ML. Each variant addresses distinct challenges and provides unique benefits. Table  1 shows SHE and PHE schemes, 
+and Table 2 shows FHE schemes.
+2.1.1  Partially homomorphic encryption
+PHE is a form of encryption that supports either addition or multiplication. RSA [19] and Paillier [20] are classic examples 
+of PHE schemes. RSA supports multiplication computation while Paillier supports addition computation. PHE is predomi-
+nantly used in scenarios where specific operations must be performed securely without revealing the underlying data. 
+One prominent example is the use of the Paillier cryptosystem [20] for privacy-preserving medical data analysis. Paillier 
+cryptosystem allows computations on encrypted medical data without decrypting due to its additive homomorphic 
+
+===== PAGE 3 =====
+Vol.:(0123456789)
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w 
+ 
+ Review
+Table 1  Summary of PHE and SHE schemes
+Scheme Type Scheme name Year Author(s) Key features Homomorphic operations Security basis
+SHE BGN [35] 2005 Boneh, Goh, Nissim First scheme to support both 
+addition and one multiplication
+Addition, one multiplication Subgroup decision problem
+Leveled FHE BV [36] 2011 Brakerski, Vaikuntanathan Introduced modulus switching 
+technique
+Leveled FHE without bootstrap-
+ping
+Ring Learning With Errors (Ring-
+LWE)
+Leveled FHE GSW [37] 2013 Gentry, Sahai, Waters Introduced approximate eigen-
+vector method
+Leveled FHE, faster homomor-
+phic operations
+Learning With Errors (LWE)
+PHE (Additive) Paillier [38] 1999 Pascal Paillier Probabilistic encryption Addition Decisional Composite Residuosity 
+Assumption
+PHE (Additive) Benaloh [39] 1994 Josh Benaloh Supports efficient decryption of 
+small plaintexts
+Addition Higher Residuosity Problem
+PHE (Multiplicative) ElGamal [40] 1985 Taher ElGamal Probabilistic encryption Multiplication Decisional Diffie-Hellman Assump-
+tion
+PHE (Multiplicative) Goldwasser-Micali [41] 1984 Goldwasser, Micali First probabilistic public-key 
+encryption
+XOR (bitwise addition mod 2) Quadratic Residuosity Problem
+PHE (Multiplicative) Unpadded RSA [42] 1978 Rivest, Shamir, Adleman Deterministic encryption Multiplication Factoring Problem
+
+===== PAGE 4 =====
+Vol:.(1234567890)
+Review  
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w
+Table 2  Summary of FHE schemes
+Name Year Author(s) Base Type Key algorithms Base scheme
+Gentry’s Scheme [23] 2009 Craig Gentry Lattice-based Bootstrapping KeyGen, Encrypt, Decrypt, Add, 
+Mult, Recrypt
+Ideal lattices
+DGHV [43] 2010 van Dijk, Gentry, Halevi, Vaikun-
+tanathan
+Integer-based Approximate GCD KeyGen, Encrypt, Decrypt, Evaluate Gentry’s scheme
+BGV [44] 2011 Brakerski, Gentry, Vaikuntanathan LWE-based Modulus switching KeyGen, Encrypt, Decrypt, Add, 
+Mult, Refresh
+Regev’s LWE
+FV (Fan-Vercauteren) [45] 2012 Fan, Vercauteren Ring-LWE-based Scale-invariant KeyGen, Encrypt, Decrypt, Add, 
+Mult
+Regev’s LWE, BGV
+GSW [37] 2013 Gentry, Sahai, Waters LWE-based Approximate eigenvectors KeyGen, Encrypt, Decrypt, Eval Regev’s LWE
+TFHE [46] 2016 Chillotti, Gama, Georgieva, Iza-
+bachène
+LWE/Ring-LWE-based Bootstrap-friendly KeyGen, Encrypt, Decrypt, Boot-
+strap
+GSW
+CKKS (BFV) [47] 2017 Cheon, Kim, Kim, Song Ring-LWE-based Approximate arithmetic KeyGen, Encrypt, Decrypt, Add, 
+Mult, Rescale
+BGV, FV
+FHEW [48] 2014 Ducas, Micciancio LWE-based Fast bootstrapping KeyGen, Encrypt, Decrypt, Boot-
+strap
+Regev’s LWE, GSW
+HElib [49] 2013 Halevi, Shoup, et al. BGV-based Optimized implementation Various (implements BGV, CKKS) BGV
+
+===== PAGE 5 =====
+Vol.:(0123456789)
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w 
+ 
+ Review
+property. Action such as calculating aggregate statistics from patient records can be performed. This capability is crucial 
+for conducting research, analysing health trends, and developing population-level insights while upholding patient 
+privacy and complying with data protection regulations. PHE schemes maintain lower computational overhead than 
+SHE and FHE because they focus on addition or multiplication. This nature of PHE makes it suitable for applications with 
+limited computational resources [21, 22].
+2.1.2  Somewhat homomorphic encryption
+SHE extends the capabilities of PHE by allowing a limited number of both additive and multiplicative operations on 
+encrypted data. However, the number of operations is restricted by the scheme’s noise growth. SHE will eventually cor-
+rupt the ciphertext if too many operations are performed. Craig Gentry presented one of the first SHE schemes in 2009 
+[23], using ideal lattices to achieve homomorphic properties and opening up possibilities for more complex computa-
+tions on encrypted data. However, SHE schemes still faced limitations in the complexity and number of computations 
+they could handle. SHE is valuable in applications where a limited set of operations needs to be performed on sensitive 
+data [24]. SHE comes in handy for secure outsourcing of computations to the cloud. Clients such as hospitals and institu-
+tions can offload their computations to the cloud without exposing their data [25]. SHE can also be used for secure data 
+aggregation in sensor networks where data from multiple sensors is aggregated without revealing individual sensor 
+readings [26]. The invention of SHE was driven by the need to support more complex computations on encrypted data 
+while managing computational efficiency. SHE broadens the scope of applications beyond what PHE can handle by 
+allowing types of operations [27].
+2.1.3  Fully homomorphic encryption
+FHE is the most powerful type of HE as it supports unlimited numbers of both additive and multiplicative operations on 
+encrypted data. Rivest, Adleman, and Dertouzos first proposed the concept of FHE in 1978 [28]. A practical FHE scheme 
+was realised with Craig Gentry’s breakthrough in 2009 [23]. FHE has transformative potential across various domains, such 
+as the healthcare and financial domains. FHE is applied to healthcare domain privacy-preserving genomics data analysis 
+where sensitive genetic information is processed [24]. FHE enables secure computations on encrypted financial data in 
+the financial domain and facilitates privacy-preserving audits and fraud detection [29]. Additionally, FHE is crucial for 
+secure multi-party computation. It allows multiple parties to jointly compute a function over their inputs while keeping 
+those inputs private [30, 31]. The primary motivation behind FHE was to enable arbitrary computation on encrypted data. 
+It also solves the fundamental problem of performing complex data analysis while maintaining privacy. FHE addresses 
+the limitations of PHE and SHE by providing a comprehensive solution for secure data processing, along with significant 
+computational and performance challenges [32– 34].
+2.1.4  Fully leveled homomorphic encryption
+FLHE is a specialised form of FHE optimised for ML applications. FLHE allows for a predetermined number of operations 
+that align well with the layered structure of ML models. FLHE supports deep learning computations on encrypted data 
+without the prohibitive overhead of full FHE by carefully managing the noise growth [44]. FLHE is particularly suited for 
+privacy-preserving ML since the models are trained and evaluated on encrypted data. This has profound implications 
+for sensitive applications such as medical diagnostics. Patient data can be securely analysed to train predictive models 
+without compromising privacy with the use of FLHE [50, 51]. FLHE also facilitates secure federated learning and enables 
+multiple organisations to collaboratively train a model on their combined data without exposing individual datasets 
+[52]. The invention of FLHE was driven by the need to balance computational feasibility and security in machine-learning 
+contexts. Traditional FHE is often too slow for practical use in deep learning. FLHE addresses this by providing a tailored 
+solution that leverages the hierarchical nature of neural networks, optimising performance while still maintaining robust 
+security [53].
+
+===== PAGE 6 =====
+Vol:.(1234567890)
+Review  
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w
+3  Application of homomorphic encryption in healthcare domain
+The section discusses various applications of HE in healthcare as HE enables secure handling of sensitive information 
+across multiple areas of healthcare. HE is becoming one of the critical solutions in EHRs, genomic data analysis, secure 
+medical imaging, clinical trials and privacy-preserving ML. This highlights its potential to revolutionise data security and 
+privacy in the medical field.
+3.1  Secure electronic health records
+EHRs are digital versions of patients’ paper charts and contain comprehensive health information. It includes medical 
+history, diagnoses, medications, immunisation dates, and laboratory test results. The sensitive nature of this information 
+makes it a prime target for cyberattacks [54, 55]. Traditional encryption methods protect data at rest and in transit but 
+require decryption for processing. The traditional method can expose the data to potential breaches [4]. Figure 1 demon-
+strates the flow of HE when it is involved in the healthcare application. HE enables secure querying and computation on 
+EHRs without decrypting the data. A hospital can use HE to search encrypted EHRs to retrieve specific patient information 
+or aggregate data for research purposes. This ensures that sensitive patient information remains confidential throughout 
+the process. Additionally, HE allows for the secure sharing of EHRs between healthcare providers and researchers. It helps 
+collaborative care and studies without compromising patient privacy [56, 57].
+3.2  Privacy‑preserving genomic data analysis
+Genomic data analysis involves examining an individual’s DNA to identify genetic variations that may influence health and 
+disease. This data is invaluable for personalised medicine because treatments are tailored to an individual’s genetic makeup 
+in this area [15]. However, this raises significant concerns since genomic data is highly sensitive and personal. HE allows 
+researchers and clinicians to perform complex genomic analyses on encrypted data. For instance, HE can be used to conduct 
+genome-wide association studies on encrypted genomic datasets. It can identify genetic markers associated with specific 
+Fig. 1  Homomorphic encryption flow in healthcare
+
+===== PAGE 7 =====
+Vol.:(0123456789)
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w 
+ 
+ Review
+diseases without revealing individual genetic information. This ensures that participants’ privacy is preserved while enabling 
+groundbreaking research in genetics and personalised medicine [51].
+3.3  Secure medical imaging
+Medical imaging, such as MRI, CT scans, and X-rays, is a cornerstone of modern diagnostics. These images contain detailed 
+information about a patient’s internal structures and are critical for accurate diagnosis and treatment planning [58]. How-
+ever, storing and sharing these images securely is challenging due to their size and sensitivity. HE can be applied to medical 
+imaging to enable secure analysis and sharing of encrypted images. For instance, HE allows radiologists to perform image 
+processing tasks, such as enhancing image quality or identifying abnormalities, directly on encrypted images. This means that 
+images can be securely stored in the cloud and accessed by authorised personnel without ever exposing the raw data [59].
+3.4  Privacy‑preserving machine learning (ML)
+ML has the potential to revolutionise healthcare by providing predictive analytics, personalised treatment recommendations, 
+and automated diagnostics. However, training and deploying ML models on sensitive healthcare data poses significant pri-
+vacy risks [60]. FLHE is particularly well-suited for privacy-preserving ML in healthcare. It enables the training and inference 
+of ML models on encrypted data, ensuring that sensitive patient information is never exposed [51, 61]. For example, an ML 
+model can be trained on encrypted patient records to predict disease outbreaks or identify high-risk patients without access-
+ing the raw data. This allows healthcare providers to leverage the power of ML while maintaining strict privacy standards.
+3.5  Secure federated learning
+Federated learning is an approach where multiple institutions collaboratively train an ML model without sharing their raw 
+data [62]. This is particularly valuable in healthcare, considering data is often sailed across different hospitals and research 
+centres. HE enhances federated learning by ensuring that the data contributed by each institution remains encrypted 
+throughout the training process [63, 64]. By combining HE and Federated learning, hospitals can collaboratively train a 
+predictive model for disease diagnosis using their encrypted patient data. HE ensures that each hospital’s data remains 
+confidential even as the aggregated model benefits from a larger and more diverse dataset [65].
+3.6  Privacy‑preserving clinical trials
+Clinical trials are essential for developing new treatments and drugs. However, they involve collecting and analysing vast 
+amounts of sensitive patient data which is raising significant privacy concerns [14, 66]. To address these concerns, HE has 
+been introduced to secure the analysis of clinical trial data. For example, researchers can perform statistical analyses on 
+encrypted datasets to evaluate the efficacy and safety of new treatments without accessing the raw data. This ensures 
+that participants’ privacy is protected throughout the trial [67].
+3.7  Secure remote monitoring and telehealth
+Remote monitoring and telehealth services have become increasingly important in the wake of the COVID-19 pandemic. 
+These services rely on continuous data collection from patients, which involves sensitive health information [68, 69]. HE 
+enables secure remote monitoring by allowing healthcare providers to analyse data from wearable devices and home 
+health monitors without accessing the raw data. HE can be used to securely monitor a patient’s vital signs and detect 
+anomalies that require medical attention. This ensures that patient data remains confidential while enabling timely and 
+effective remote care [70].
+4  Homomorphic encryption attacks and their defenses
+Cryptography attacks are malicious attempts to compromise the security of cryptographic systems, aiming to exploit 
+vulnerabilities and gain unauthorised access to sensitive information. Section  4 will delve into the potential attacks tar-
+geting HE systems and the corresponding defense mechanisms. Existing security concerns will be examined from three 
+
+===== PAGE 8 =====
+Vol:.(1234567890)
+Review  
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w
+distinct perspectives. The first perspective focuses on historical attacks that have been successfully executed against 
+HE systems. These include side-channel attacks, KPA, CPA and CCA. Each of these attack methods has demonstrated the 
+ability to compromise the security of HE under certain circumstances. The second perspective considers scheme-based 
+vulnerabilities, which are potential attacks that exploit weaknesses in specific HE schemes. A primary example in this 
+category is lattice attacks, which target the mathematical structures underlying many HE systems. The third perspective 
+addresses algorithm-based vulnerabilities, which are possible attacks that target weaknesses in the encryption algo -
+rithm itself. This category includes FIA and other forms of key recovery attacks, distinct from those in the first category. 
+A comprehensive understanding of the challenges HE faced will be provided by analysing these three perspectives. It 
+will help the development of more effective defense strategies to enhance the security and reliability of HE applications.
+4.1  Side‑channel attacks and defenses
+A side-channel attack is a security exploit that aims to gather information from physical emanations such as timing, 
+power consumption, or electromagnetic leaks. Side-channel attacks pose a significant threat to the HE system as they 
+can extract sensitive information without directly attacking the encryption scheme itself [71– 73]. Figure  2 illustrates 
+the presence of two distinct types of side-channel attacks: passive attack and active attack. Passive side-channel attacks 
+include power analysis attacks, timing attacks, and electromagnetic analysis attacks. Active side-channel attacks involve 
+FIA. Passive side-channel attacks will be discussed in Sect.  4.1, while fault-injection attacks will be covered in Sect.  4.6.
+4.1.1  Timing attack
+A timing attack occurs when an attacker attempts to compromise a cryptosystem by analysing the time taken to execute 
+cryptographic algorithms. It was first introduced in Kocher’s work [74], explaining a timing attack occurs because every 
+logical operation execution time varies based on the input. The input can be reverse-engineered by the attacker with 
+precise measurements of the time for each operation. Sensitive information can be easily exposed through timing infor-
+mation compared to using cryptanalysis of known plaintext and ciphertext pairs [75]. Timing attacks can be combined 
+with cryptanalysis, such as KPA, known ciphertext attacks and CCA to increase the possibility of information leakage. 
+Information can leak from a system through measurement of the time it takes to respond to certain queries. Information 
+such as cryptographic system design, the CPU running the system, the algorithm used, assorted implementation details, 
+timing attack countermeasures, and the accuracy of the timing measurements are strongly dependent on defining how 
+much the timing information gained can benefit the attacker. Any algorithm that has data-dependent timing variation 
+can be vulnerable to timing attacks. It is difficult to remove timing dependencies in some algorithms that use low-level 
+operations that frequently exhibit varied execution times. In the work by Cheng [76], they perform a cache-timing attack 
+targeting the Barrett multiplication module in the SEAL library. They successfully exhibit a cache-timing vulnerability that 
+exploits the existence of extra-reductions as side-channel leakage. In [77], the authors present a novel timing analysis 
+Fig. 2  Types of side channel attack
+
+===== PAGE 9 =====
+Vol.:(0123456789)
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w 
+ 
+ Review
+technique that estimates the error value of a final ciphertext after homomorphic gate computation. They exploit the 
+timing channel to infer the error range, with applicability to both schemes with and without bootstrapping.
+4.1.2  Power analysis attack
+Power analysis is a type of side-channel attack where an attacker examines the power consumption of a cryptographic 
+hardware device. These exploits take advantage of the device’s physical design since semiconductor devices function 
+according to the laws of physics, where small alterations in voltage demand minor movements of electric charges. By 
+measuring these minor movements of electric charges, attackers can collect information about the processed data. [78]. 
+Power analysis is divided into two categories: Simple Power Analysis and Differential Power Analysis (DPA). Simple Power 
+Analysis involves the straightforward interpretation of power traces or graphs of electrical activity over time. In opposi-
+tion, DPA is a more sophisticated technique, using statistical analysis of data from multiple cryptographic operations 
+to deduce intermediate values within cryptographic computations [79, 80]. Both Simple Power Analysis and DPA were 
+introduced to the cryptography community in 1998 by Paul Kocher, Joshua Jaffe, and Benjamin Jun [81]. Power analysis 
+allows an attacker to gain insight into what is happening inside hardware that is otherwise considered tamper-resistant. 
+For instance, in the DES key schedule, 28-bit key registers are rotated. Some implementations check if the least signifi-
+cant bit is a 1; if so, the register shifts right, and a one is prepended. If the bit is 0, the register shifts without prepending. 
+Power analysis can detect these differences, allowing an adversary to infer the bits of the secret key. Even cryptographic 
+algorithms like AES and triple-DES, which are mathematically robust, can be easily broken using power analysis attacks. 
+This makes power analysis a combination of both algorithmic cryptanalysis and implementation-level vulnerabilities. 
+This work [82] presents the first power-based side-channel attack targeting the Gaussian sampling process in the SEAL 
+HE library, successfully extracting plaintexts by exploiting vulnerabilities in the encryption phase, with SEAL v3.2 as the 
+primary victim. Another work [ 83] explores correlation power analysis (CPA) attacks on the AES-128 algorithm. It pro -
+vides a theoretical overview of power analysis attacks and applies the technique to an FPGA implementation of an AES 
+core. Using 10,000 traces, the CPA attack successfully extracted all bytes of the AES-128 final round key. Based on these 
+findings, it is crucial to establish reliable countermeasures capable of addressing the problems raised by power analysis 
+attacks and guaranteeing the effectiveness of HE implementations in actual applications.
+4.1.3  Electromagnetic‑based (EM) attack
+An EM side-channel attack exploits the electromagnetic emissions from an electronic device as a source of information 
+leakage. These attacks are non-invasive, meaning the attacker does not need physical access to the device, which makes 
+them particularly effective and easy to execute [84]. All that is required is a near-field probe and an oscilloscope. Unlike 
+some power-based attacks that may need specialised tools or IC decapsulation, EM attacks don’t require any modifica-
+tions to the targeted device. The non-intrusive nature of EM attacks also makes it nearly impossible for the victim to 
+detect them, further enhancing their effectiveness as they are difficult to identify and prevent [ 85]. EM attacks have 
+demonstrated a higher signal-to-noise ratio (SNR) compared to power-based attacks, which reduces the amount of data 
+collection required to eliminate noise. Similar to power analysis attacks, EM attacks are categorised into two main types: 
+Simple Electromagnetic Analysis [86] and Differential Electromagnetic Analysis [87]. The key distinction between the two 
+is that Simple Electromagnetic Analysis involves directly interpreting the data traces, while Differential Electromagnetic 
+Analysis collects numerous traces and applies differential statistical techniques to identify data-dependent correlations. 
+While Differential Electromagnetic Analysis is more powerful and versatile, it is also more complex and time-intensive. 
+With the rise of ML, analysis techniques utilising pattern recognition and classification are becoming more prevalent, 
+making EM attacks even more effective. EM-based attacks have successfully extracted sensitive data from various cryp -
+tographic devices. For instance, Fox-IT demonstrated the strength of EM attacks by breaking an AES-256 cryptographic 
+core within 5 min from a distance of 1 m [88]. Additionally, research has highlighted the effectiveness of EM attacks on 
+IoT devices, further showcasing their versatility and impact.
+4.1.4  Defense mechanisms 1: constant‑time algorithms
+Implementing algorithms in constant time helps mitigate timing attacks by ensuring that all operations take the same 
+amount of time, regardless of the input values. This prevents attackers from gaining insights based on the time taken to 
+perform operations on encrypted data. By eliminating timing variations, constant-time algorithms reduce the amount 
+
+===== PAGE 10 =====
+Vol:.(1234567890)
+Review  
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w
+of information that attackers can gather through timing analysis [89]. In the work of Almeida et al. [90], it is proven that 
+constant time is working when it comes to defending against side-channel attacks. The paper presents a methodology 
+for proving the security of cryptographic implementations against timing attacks, highlighting the challenges of bridging 
+provable security and practical implementations and demonstrating a proof-of-concept on the constant-time MEE-CBC 
+construction. Constant-time programming aims to eliminate these timing variations by ensuring that the execution time 
+of a cryptographic operation is independent of the input values, including secret keys. One of the primary techniques 
+in constant-time programming is to avoid conditional statements that depend on secret data. Instead of using ‘if-else‘ 
+constructs, constant-time code uses arithmetic operations and bitwise operations to achieve the same result without 
+introducing timing variations. Constant-time programming ensures that memory access patterns are uniform and do 
+not depend on secret data. This can be achieved by accessing all elements of an array or data structure in a fixed pat -
+tern, regardless of the actual data being processed. Ensuring that arithmetic operations take a constant amount of time 
+regardless of the operands is another crucial aspect of constant-time programming. This can involve using fixed-point 
+arithmetic or other techniques to ensure uniform execution times. Designing algorithms from the ground up to be 
+constant-time can also be an effective strategy. This involves choosing data structures and algorithms that inherently 
+avoid timing variations. For example, using a constant-time hash function or encryption algorithm can eliminate timing 
+attack vectors. Authors claim that constant-time programming is a robust countermeasure against timing side-channel 
+attacks, including those introduced by speculative execution vulnerabilities like Spectre [91].
+4.1.5  Defense mechanisms 2: noise injection
+Techniques such as DPA resistance involve balancing the power consumption of cryptographic devices to ensure that 
+power usage does not vary significantly with different inputs. This reduces the effectiveness of power analysis attacks. 
+Methods like dynamic voltage scaling, power masking, and current flattening are used to make power consumption 
+patterns less predictable and harder to analyse [92, 93]. Researchers introduce a binary field ECC processor designed to 
+resist DPA by using randomised Montgomery multiplication and division. The design significantly improves speed and 
+flexibility, achieving up to 50% performance gain in Field-Programmable Gate Arrays and 36% in Application-Specific 
+Integrated Circuit evaluations compared to earlier work. By incorporating bit-parallel architecture and module duplica-
+tion, the design offers enhanced efficiency despite a slight increase in resource use [94].
+4.1.6  Defense mechanisms 3: power analysis countermeasures
+Power analysis countermeasures are crucial in defending against attacks that exploit the power consumption patterns of 
+cryptographic devices. Techniques like DPA resistance aim to minimise the variations in power usage during cryptographic 
+operations. By ensuring that the power consumption remains relatively constant, attackers find it more difficult to extract 
+useful information. Common methods used in this defense include dynamic voltage scaling, power masking, and current 
+flattening. These approaches work by obscuring power consumption patterns, making them less predictable and, therefore, 
+harder to analyse. Researchers have also developed specific hardware solutions, such as a bit-parallel elliptic curve cryp-
+tography (ECC) coprocessor, which is designed to resist differential power analysis attacks effectively [94]. This coprocessor 
+operates by balancing power consumption across operations, reducing the risk of successful attacks.
+4.1.7  Defense mechanisms 4: shielding and isolation
+Shielding and isolation techniques offer physical protection for cryptographic devices against side-channel attacks. 
+Shielding involves encasing devices in materials that block electromagnetic emissions. This prevents attackers from 
+intercepting signals that could reveal sensitive information. Another layer of defense comes from isolating critical com-
+ponents. By separating these components from other parts of the system, the leakage of information through unin-
+tended channels is minimised. Additionally, tamper-resistant hardware further strengthens this defense. When combined, 
+shielding and isolation methods significantly reduce the risk of information being extracted through electromagnetic 
+or other side-channel means [95]. These techniques are especially important in environments where physical access to 
+cryptographic devices is possible.
+
+===== PAGE 11 =====
+Vol.:(0123456789)
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w 
+ 
+ Review
+4.2  Key recovery attacks and defenses
+A key recovery attack is a type of cryptographic attack where the attacker aims to retrieve the secret decryption 
+key used in a cryptographic algorithm. By obtaining the key, the attacker can decrypt any ciphertext encrypted 
+with that key, effectively breaking the confidentiality of the encrypted data. Key recovery attacks can target various 
+cryptographic systems, including symmetric and asymmetric encryption schemes, and they exploit weaknesses in 
+the algorithm, implementation flaws, or inadequate key management practices [96].
+Performing a key recovery attack involves several steps. The attacker may use various techniques, such as brute 
+force, where all possible keys are systematically tried until the correct one is found, or more sophisticated methods, 
+like side-channel attacks, which exploit physical leakages from the cryptographic device, such as timing information, 
+power consumption, or electromagnetic emissions. Cryptanalysis techniques, such as linear and differential crypta -
+nalysis, can also be employed to reduce the complexity of finding the key by analysing the relationship between 
+plaintexts and ciphertexts [97]. The attacker may start by gathering ciphertexts and their corresponding plaintexts, 
+if available, and then use these pairs to derive information about the key, either through direct computation or by 
+leveraging patterns and statistical anomalies.
+The impact of a successful key recovery attack is significant and far-reaching. Once the secret decryption key is 
+compromised, the attacker can decrypt all past and future communications encrypted with that key, leading to a total 
+breach of confidentiality. This can result in the exposure of sensitive information, financial loss, privacy violations, 
+and damage to the reputation of the affected entities. In the context of secure communication systems, key recovery 
+attacks can undermine trust and render the encryption scheme useless, necessitating immediate corrective actions, 
+such as key replacement, algorithm updates, and enhanced security measures to prevent future attacks. Cheng’s work 
+[76] presents a key-recovery attack that utilises the timing leakage of the side channel attack, which can determine 
+the secret key with a few ciphertexts. In the work of Guo [98], key recovery attacks on Approximate Homomorphic 
+Encryption, such as CKKS are performed. The attack is performed on OpenFHE, demonstrating the ability to recover 
+the secret key using just one shared decryption output.
+Researchers have revealed that several SHE schemes are vulnerable to key recovery attacks, stronger than typical 
+IND-CCA1 attacks, allowing an adversary to recover private keys through decryption oracle queries [99]. Adaptive 
+key recovery attacks were carried out on NTRU-based SHE schemes, enabling the private key to be computed for 
+all parameter sets. These attacks demonstrate the need for extreme caution when deploying HE, as the presence of 
+such attacks indicates that the scheme is not CCA1-secure. Indeed, nearly every SHE scheme proposed thus far has 
+been susceptible to this type of attack.
+4.2.1  Defense mechanism 1: noise flooding
+Noise-flooding techniques are different from noise injection. Noise injection adds random noise to specific parts of 
+the computation process, such as during intermediate calculations or data transfers. On the other hand, noise flood-
+ing is more aggressive and may affect the entire operation or larger portions of the system. The goal is to overwhelm 
+the whole system with noise to make it more difficult for an attacker to distinguish the useful signal from the noise. 
+Noise-flooding techniques have been proposed as an effective countermeasure against IND-CPAD attacks [100]. These 
+methods involve adding noise (from a Gaussian distribution) to the message obtained after decrypting a ciphertext 
+before returning it to the adversary. Li, Micciancio, Schultz, and Sorrell formally analysed these techniques, showing 
+that when the noise level is sufficiently high, they can be provably secure. However, the noise required for this level 
+of security is substantial, significantly limiting the message precision CKKS can handle, typically to 8 or 16 bits for 
+practical parameter sets [101]. In Guo’s work [98], they employ noise-flooding countermeasures based on non-worst-
+case noise estimation, which are implemented to attain IND-CPAD security.
+4.2.2  Defense mechanism 2: key escrow and split key schemes
+The implementation of key escrow and split key schemes in HE systems presents unique challenges due to the com -
+plex nature of the keys involved. HE often relies on large, structured keys that enable computational operations on 
+
+===== PAGE 12 =====
+Vol:.(1234567890)
+Review  
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w
+encrypted data. Dividing these keys while maintaining their homomorphic properties requires careful mathemati-
+cal consideration. Recent research has explored adapting traditional secret sharing schemes for use with HE keys, 
+proposing a novel framework that preserves the structural integrity of the keys while providing the security benefits 
+of key splitting [102].
+4.2.3  Defense mechanism 3: hardware security modules (HSMs)
+HSMs are designed to provide a secure environment for cryptographic operations, offering robust protection for encryp-
+tion keys throughout their lifecycle - from generation and storage to usage and destruction. The primary strength of 
+HSMs lies in their physical security measures. These devices are engineered to resist various forms of tampering, includ-
+ing physical intrusion, side-channel attacks, and environmental manipulations. Many HSMs are certified under stringent 
+security standards such as FIPS 140-2 or Common Criteria, ensuring they meet rigorous security requirements. In the 
+context of HE, keys are typically large and structured, requiring careful management to maintain their integrity and 
+security [103]. HSMs provide a secure execution environment where these keys can be generated and stored, ensuring 
+they never leave the protected confines of the hardware [104].
+4.2.4  Defense mechanism 4: post‑quantum cryptography
+Post-quantum cryptographic algorithms are resistant to attack by quantum computers. It can provide long-term security 
+for encryption keys in the case of safeguarding against future advancements in computational power. Post-quantum 
+cryptography focuses on developing encryption algorithms based on problems that are believed to be hard for quan-
+tum computers to solve, such as lattice-based cryptography and code-based cryptography. Many HE schemes rely on 
+lattice-based problems due to the post-quantum security it provides. The LWE problem and the Ring-LWE form the basis 
+for several HE schemes that are believed to be resistant to quantum attacks. Ongoing research is focused on optimis-
+ing these schemes for practical implementation while maintaining their quantum resistance [105]. On the other hand, 
+code-based cryptography is less common in the current HE systems. It offers another avenue for post-quantum security. 
+Researchers are exploring ways to develop homomorphic schemes based on error-correcting codes, which could provide 
+an alternative approach to quantum-resistant HE [106].
+4.3  Chosen ciphertext attack (CCA) and defenses
+A CCA is a scenario where an adversary gains the capability to choose ciphertexts and obtain their corresponding plain-
+texts, not directly but via access to a decryption oracle. The attacker can submit any ciphertext of their choosing to this 
+oracle and receive the plaintext output. The critical aspect of a CCA is that the attacker uses this information to deduce 
+or break the underlying encryption scheme, potentially recovering the secret key or finding a way to decrypt other 
+ciphertexts without direct access to the key [107].
+In more technical terms, there are two main types of CCA. The first is CCA1 (Non-Adaptive Chosen Ciphertext Attack). 
+Here, the attacker chooses ciphertexts to be decrypted before obtaining any information about the target ciphertext. 
+This form is considered less powerful [108]. The second type is CCA2 (Adaptive Chosen Ciphertext Attack). The more 
+formidable variant is where the attacker can adaptively choose subsequent ciphertexts based on information gathered 
+from previous decryptions. This adaptability significantly enhances the attacker’s ability to exploit the encryption scheme 
+[109]. In general encryption algorithms, CCAs represent a significant vulnerability. If an encryption scheme is not designed 
+to be CCA-secure, even ciphertexts that seem robust under other attack models might be vulnerable to decryption or 
+key recovery by a determined adversary. CCA security is thus a critical benchmark in evaluating the robustness of an 
+encryption algorithm. For instance, in standard encryption systems like RSA or ElGamal, CCA attacks can be devastating if 
+the schemes are implemented without safeguards like padding schemes (e.g., Optimal Asymmetric Encryption Padding 
+or OAEP) designed specifically to counteract these attacks [110].
+HE presents a unique challenge when considering CCAs. HE allows computation on encrypted data without decrypt-
+ing it, preserving the confidentiality of the underlying data. This property is immensely valuable in scenarios like secure 
+data analysis, cloud computing, and privacy-preserving ML. However, the same property that makes HE powerful also 
+makes it particularly vulnerable to CCAs. In a HE scheme, an attacker could, theoretically, craft specific ciphertexts that, 
+when decrypted, provide insights into the secret key or the plaintext data. The adaptive nature of CCA2 is especially 
+
+===== PAGE 13 =====
+Vol.:(0123456789)
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w 
+ 
+ Review
+problematic; since HE involves multiple stages of computation on ciphertexts, each stage could inadvertently leak infor-
+mation if the scheme is not rigorously CCA-secure [111].
+4.3.1  Defense mechanism 1: CCA‑secure homomorphic encryption schemes
+Developing HE schemes that are secure against CCAs has been a key research focus in recent years. Table 3 presents the stand-
+ard definitions of security nowadays. Traditional CCA-secure encryption schemes often conflict with the malleable nature of 
+HE. Several approaches have been proposed to address this challenge. Constrained HE limits the homomorphic operations on 
+ciphertexts, reducing the attack surface while allowing some computational capabilities [31]. Randomisation Techniques trans-
+form ciphertexts to preserve the plaintext but alter the ciphertext’s structure, preventing attacks from chosen ciphertext queries 
+[112]. Hybrid Schemes combine HE with other cryptographic primitives, such as zero-knowledge proofs or digital signatures, 
+to provide CCA security. Functional Encryption Approaches use functional encryption techniques to achieve CCA security by 
+allowing fine-grained control over computations on encrypted data [113].
+4.3.2  Defense mechanism 2: ciphertext randomization
+Randomising the ciphertext is an effective defense mechanism against CCA. This process involves introducing random 
+elements, such as padding or randomised encryption schemes, into the encryption process. As a result, even if the same 
+plaintext is encrypted multiple times, the resulting ciphertext will be different each time. This randomness makes it 
+much harder for attackers to identify patterns or perform statistical analysis on the ciphertext. Randomisation ensures 
+that attackers cannot easily infer relationships between ciphertexts, even if they have knowledge of some plaintext-
+ciphertext pairs [114]. By disrupting the predictability of the encryption process, this method effectively counters CCA.
+4.3.3  Defense mechanism 3: ciphertext integrity and authentication
+The homomorphic signatures allow for the signing of data in such a way that computations can be performed on the 
+signatures, mirroring the operations on the underlying ciphertexts. This enables verification of both the integrity of the 
+ciphertext and the correctness of homomorphic computations. Verifiable Computation allows a client to outsource com-
+putations to a server and efficiently verify the correctness of the returned results [115]. In the context of HE, verifiable 
+computation schemes can be used to ensure that homomorphic operations have been performed correctly, mitigating 
+risks associated with malicious modifications of ciphertexts. Authenticated HE combines HE with authentication mecha-
+nisms, allowing for both computation on encrypted data and verification of the ciphertext’s integrity. Recent research has 
+proposed various constructions that achieve both homomorphic properties and ciphertext authenticity. Homomorphic 
+Message Authentication Codes are MAC schemes that support homomorphic operations, allowing for the verification of 
+both the integrity of individual ciphertexts and the correctness of computations performed on them [116].
+4.3.4  Defense mechanism 4: regular audits and updates
+Regularly auditing cryptographic implementations and updating encryption algorithms and protocols can help iden-
+tify and mitigate vulnerabilities that could be exploited in ciphertext-only attacks. Audits involve thorough reviews of 
+cryptographic systems, including code analysis, penetration testing, and compliance checks. Regular updates ensure 
+that the latest security patches and improvements are applied to the encryption system. Implementing strict access 
+controls on who can submit ciphertexts for decryption or homomorphic computation can limit the opportunities for 
+CCAs. Comprehensive audit logging of all operations can also help detect and respond to potential attacks [117].
+4.4  Known plaintext attacks (KPA) and defenses
+In KPA, the attacker has access to both the plaintext and its corresponding ciphertext. The goal is to use this information 
+to deduce the encryption key or gain insights into the encryption process. KPAs can be particularly effective if the attacker 
+has access to a large number of plaintext-ciphertext pairs. KPA is particularly potent against encryption schemes that do 
+not use additional randomisation, such as static initialisation vectors or lack of proper padding. The primary challenge in 
+a KPA is obtaining the initial set of plaintext-ciphertext pairs, but once acquired, the attack can significantly compromise 
+the encryption system [118].
+
+===== PAGE 14 =====
+Vol:.(1234567890)
+Review  
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w
+Table 3  Summary of security notions in cryptography
+Security Notion Full name Usage Protects against Key concepts
+IND-CPAD Indistinguishability under Chosen Plaintext 
+and Divisibility Attack
+Used in scenarios where an attacker might 
+have partial information about the 
+plaintext
+CPA and attacks exploiting 
+divisibility properties of the 
+ciphertext
+Attacker can’t distinguish between encryp-
+tions of chosen plaintexts. Ciphertext 
+doesn’t reveal divisibility properties of 
+plaintext
+IND-CPA Indistinguishability under Chosen Plaintext 
+Attack
+Standard security notion for public-key 
+encryption
+CPA Attacker can encrypt arbitrary messages. 
+Attacker can’t distinguish which of two 
+chosen plaintexts was encrypted
+IND-CCA Indistinguishability under Chosen Cipher-
+text Attack
+Stronger notion used in scenarios where 
+an attacker might have temporary access 
+to decryption oracle
+CCAs (non-adaptive) Attacker can decrypt chosen ciphertexts 
+(except the challenge ciphertext). Attacker 
+still cannot distinguish which of two cho-
+sen plaintexts was encrypted
+IND-CCA2 Indistinguishability under Adaptive Cho-
+sen Ciphertext Attack
+Strongest commonly used security notion 
+for public-key encryption
+Adaptive CCAs Attacker can decrypt chosen ciphertexts 
+even after seeing the challenge ciphertext. 
+Provides security against a wide range of 
+practical attacks
+
+===== PAGE 15 =====
+Vol.:(0123456789)
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w 
+ 
+ Review
+Two common methods for using plaintext and ciphertext to identify encryption keys are frequency analysis and pat-
+tern matching. In frequency analysis, the attacker uses the frequency of letters or symbols in the ciphertext to determine 
+the encryption key. For example, if the attacker knows that a particular letter appears very frequently in the plaintext, 
+they can infer that it corresponds to a common letter in the ciphertext, such as “e” or “a” . By comparing the frequency 
+of letters in the ciphertext to the frequency of letters in the plaintext, the attacker can deduce the encryption key. In 
+pattern matching, the attacker looks for patterns in the plaintext and compares them to patterns in the ciphertext. For 
+example, if the attacker knows that a particular phrase appears frequently in the plaintext, they can look for that phrase 
+in the ciphertext and use the corresponding encryption key to decrypt the message [119].
+If the plaintext and ciphertext are identical, the attacker can use the pattern-matching method to deduce the encryp-
+tion key. In this case, the attacker can identify the encryption key by comparing the patterns in the plaintext and cipher-
+text. However, if the plaintext and ciphertext are not identical, the attacker must use frequency analysis to deduce the 
+encryption key. The process of performing a KPA involves analysing the known plaintext and its corresponding ciphertext 
+to identify patterns or relationships that can reveal the key. For instance, in classical ciphers, an attacker might look for 
+repeating patterns in the ciphertext that correspond to known phrases in the plaintext. In modern cryptographic sys-
+tems, an attacker might use differential cryptanalysis or linear cryptanalysis techniques to uncover the key. The impact 
+of a successful KPA can be severe, as it may allow the attacker to decrypt any future ciphertexts encrypted with the same 
+key [120].
+Researchers perform KPA on Omar and abed HE Scheme, which is a noise-free FHE scheme that allows arbitrary 
+computations on encrypted data without decryption [121]. KPA towards HE scheme for cloud computing, resulting in 
+4 of the proposed homomorphic schemes is vulnerable to KPA [122]. KPA on polynomial-based HE, resulting in some 
+cryptosystems being insecure against KPA if there are at least two pairs [123].
+4.4.1  Defense mechanism 1: key management and randomization techniques
+Dynamic key generation, key rotation policies, randomised encryption, and entropy injection are critical techniques 
+for enhancing the security of HE systems, particularly in mitigating KPAs. Dynamic key generation ensures that unique 
+encryption keys are created for each session or message, reducing the effectiveness of attacks by limiting exposure to 
+static keys. Key rotation policies further protect encrypted data by periodically updating encryption keys, minimising 
+the time frame within which an attacker could exploit plaintext-ciphertext pairs. Randomised encryption introduces 
+randomness into the encryption process, ensuring that the same plaintext generates different ciphertexts each time it 
+is encrypted, thereby preventing pattern recognition. Additionally, entropy injection regularly adds unpredictability to 
+the key generation and encryption processes, strengthening the overall security and resilience of the HE system against 
+potential cryptanalytic attacks [124].
+4.4.2  Defense mechanism 2: strong cryptographic protocols
+Employing cryptographic protocols that are resistant to KPAs, such as those using strong encryption algorithms and key 
+management practices, can protect against these types of attacks. These protocols are designed to ensure that even if an 
+attacker knows the plaintext and ciphertext, they cannot deduce the encryption key or gain meaningful insights into the 
+encryption process. Researchers proposed a Fully symmetric HE that is immune to known-plaintext attack and known 
+ciphertext attack [125]. The new scheme is referred to as the Homomorphic Hybrid Symmetric Encryption Scheme. It is 
+based on mixing the homomorphic behaviour of two well-known symmetric encryption schemes.
+4.4.3  Defense mechanism 3: data anonymization
+Data anonymisation serves as a valuable defense mechanism against KPA. Even if an attacker has access to both the 
+plaintext and its corresponding ciphertext, anonymised data is less useful for inferring the encryption key or other sensi-
+tive information. Anonymisation techniques focus on removing or obfuscating personally identifiable information and 
+other critical details before the encryption process begins. This additional layer of protection makes it more difficult for 
+attackers to link encrypted data to meaningful insights [126]. As a result, even when plaintext-ciphertext pairs are avail-
+able, the utility of the data for cryptanalysis is significantly reduced.
+
+===== PAGE 16 =====
+Vol:.(1234567890)
+Review  
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w
+4.4.4  Defense mechanism 4: secure software development practices
+Adhering to secure software development practices, including thorough testing, code reviews, and adherence to 
+security standards, can prevent vulnerabilities that could be exploited in KPAs. Secure software development prac -
+tices involve using secure coding techniques, performing regular security assessments, and following best practices 
+for cryptographic implementations. Following secure coding practices, using vetted cryptographic libraries, and 
+conducting regular code reviews are essential in developing robust HE systems resistant to CCAs [127].
+4.5  Chosen plaintext attacks (CPA) and defenses
+A CPA is a scenario where the attacker can select plaintexts and observe their corresponding ciphertexts. While con -
+sidered less practical than a KPA, it remains highly dangerous [128]. If a cipher is vulnerable to a KPA, it is automati-
+cally susceptible to a CPA, though the reverse is not always true. In modern cryptography, differential cryptanalysis 
+is a notable example of a CPA, and it’s one of the rare techniques where conversion from a CPA to a KPA is possible 
+due to its focus on text pairs. In a CPA, the attacker can freely select arbitrary plaintexts and receive the correspond-
+ing ciphertexts. The goal is to gain information about the encryption key or the encryption algorithm. CPAs are 
+particularly relevant in scenarios where attackers can interact with the encryption system and obtain ciphertexts 
+for chosen plaintexts [101].
+There are two types of CPAs. The first is the batch-CPA, where the attacker selects all plaintexts in advance without 
+initially seeing any corresponding ciphertexts. This is typically what’s meant by a “CPA” unless otherwise specified. The 
+second type is the adaptive CPA (CPA2), where the attacker can request ciphertexts for additional plaintexts after observ-
+ing the ciphertexts of previously chosen plaintexts [129].
+To perform a CPA, the attacker first identifies the objective, such as recovering the encryption key or decrypting sensi-
+tive information, and gains an understanding of the encryption scheme in use. Next, the attacker sets up the environ-
+ment by establishing interaction with the encryption oracle and selecting initial plaintexts based on prior knowledge or 
+hypotheses. The attacker then submits these plaintexts to the oracle, collects the resulting ciphertexts, and analyses them 
+to identify patterns or anomalies. Through iterative testing and correlation analysis, the attacker refines their hypotheses 
+and tests them to recover the encryption key or exploit algorithmic weaknesses. The success of the attack is evaluated 
+based on key recovery accuracy, efficiency, and the extent of the breach, followed by comprehensive documentation of 
+the methodology, findings, and security recommendations. Practical considerations include ensuring adequate com-
+putational resources and adhering to ethical and legal guidelines. Understanding and mitigating CPAs is crucial for 
+developing robust cryptographic systems capable of withstanding such sophisticated attacks [130].
+On the other hand, a CPA2 is more dynamic and powerful. In a CPA2, the attacker can adaptively choose plaintexts 
+based on the ciphertexts already observed. After analysing the initial set of plaintexts and their corresponding cipher -
+texts, the attacker can select additional plaintexts and obtain more ciphertexts, allowing for a more iterative and refined 
+analysis. This adaptive nature makes CPA2 more effective in uncovering subtle weaknesses in the encryption scheme, as 
+the attacker can continuously refine their hypotheses and exploit new information gained during the attack.
+The primary difference between CPA and CPA2 lies in the adaptability of the attack process. While CPA requires all 
+plaintexts to be chosen before any ciphertexts are seen, CPA2 allows for continuous interaction with the encryption 
+oracle, making it more flexible and potentially more damaging. The impact of CPA2 is generally more severe because it 
+can reveal more intricate details about the encryption scheme, leading to a higher likelihood of breaking the encryption 
+and compromising security. Both types of attacks highlight the importance of designing encryption protocols that are 
+resilient against such sophisticated attacks.
+4.5.1  Defense mechanism 1: randomized encryption
+Randomised encryption schemes, which incorporate random elements into the encryption process, ensure that the 
+same plaintext will produce different ciphertexts each time it is encrypted. This prevents attackers from gaining useful 
+information by comparing ciphertexts. Techniques like probabilistic encryption and adding random padding to plaintexts 
+before encryption can be used to introduce randomness into the ciphertexts. In 1999, Paillier introduced a probabilistic 
+encryption scheme, with its security relying on the computational difficulty of the decisional composite residuosity 
+
+===== PAGE 17 =====
+Vol.:(0123456789)
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w 
+ 
+ Review
+assumption. Encryption using the Paillier algorithm offers semantic security, protecting against chosen-plaintext attacks 
+(IND-CPA) [38].
+4.5.2  Defense mechanism 2: use of strong cryptographic primitives
+One of the primary defenses against CPA is the use of strong cryptographic primitives. These are mathematical algorithms 
+specifically designed to resist attacks, including CPA. Cryptographic primitives based on hard mathematical problems, 
+such as lattice-based cryptography, offer significant security advantages. Lattice-based systems, in particular, rely on 
+problems that are difficult to solve even with the most advanced computational techniques. This makes it highly challeng-
+ing for attackers to extract any meaningful information from chosen plaintexts. The encryption process in these schemes 
+produces ciphertexts that are highly non-linear and unpredictable, effectively preventing any clear correlations between 
+plaintexts and ciphertexts. Consequently, even when attackers can choose the plaintexts, they cannot easily derive the 
+corresponding ciphertext patterns or reverse-engineer the encryption process [131]. These cryptographic primitives are 
+essential for ensuring that sensitive data remains secure, even in the face of sophisticated cryptanalytic attacks.
+4.5.3  Defense mechanism 3: adaptive security measures
+The implementation of adaptive security measures can be use to defense against CPA. Adaptive security refers to tech-
+niques that adjust key or encryption parameters over time, reducing the likelihood of successful attacks. By frequently 
+changing encryption keys or parameters, adaptive security measures limit the duration in which attackers can gather 
+sufficient data to conduct a meaningful CPA. Key rotation, session keys, and dynamic re-keying are all examples of tech-
+niques that can be employed to ensure that encryption keys are regularly updated. This makes it much more difficult for 
+attackers to accumulate enough data to mount a successful attack. Adaptive security measures essentially reduce the 
+window of opportunity for attackers, as they prevent prolonged use of the same cryptographic key or setup [132]. As a 
+result, these measures significantly enhance the overall security of cryptographic systems by reducing the potential for 
+key exposure and compromising encrypted data.
+4.5.4  Defense mechanism 4: secure key management
+Strong key management practices are a critical aspect of defending against CPA. Poor key management can provide 
+attackers with the opportunity to exploit encryption keys, potentially compromising the entire encryption process. Secure 
+key management involves a variety of strategies aimed at safeguarding encryption keys from unauthorised access or 
+misuse. These include frequent key rotation, where keys are replaced or updated regularly, and secure storage of keys, 
+often within HSMs. HSMs are dedicated hardware devices that offer a higher level of protection for keys than software 
+solutions alone. Additionally, implementing strict access controls and multi-factor authentication ensures that only 
+authorised personnel can access encryption keys. By following robust key management protocols, organisations can 
+effectively prevent attackers from using CPA to compromise the integrity of their encryption systems [133]. Proper key 
+management serves as a foundational element in maintaining the security of encrypted data.
+4.6  Fault injection attack (FIA) and defenses
+FIA aims to introduce error into the HE process, either during computation or key generation, to uncover secret keys 
+or plaintexts. FIAs can be software-based or hardware-based. Figure  3 shows the invasive attack and the non-invasive 
+attacks in FIA. The hardware-based FIA can be conducted by manipulating the environment where cryptographic opera-
+tions occur, such as through voltage manipulation, electromagnetic radiation, or even laser-based techniques [134], as 
+shown in Table 4.
+A majority of FI attacks involve either hardware tampering or the use of physical probes connected to the target 
+circuitry. For instance, voltage glitching attacks usually require the desoldering of power filtering capacitors so that 
+the attacker is able to have more control of the voltage input of the processor. In some instances, FI attacks can be 
+executed through software alone, without modifying the hardware. This is possible in cases where System-on-Chips 
+include software-controlled voltage regulators and clock sources across different power and clock zones. Two exam-
+ples of such attacks are CLKSCREW and Plundervolt. These voltage regulators and clock sources are typically used 
+
+===== PAGE 18 =====
+Vol:.(1234567890)
+Review  
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w
+for Dynamic Voltage and Frequency Scaling to conserve power. Nonetheless, access to these controls should not be 
+accessible to low-privilege software, and safeguards must be in place to stop malicious software from causing faults.
+There are three main types of faults in FIA: instruction skipping, incorrect data fetch, and incorrect instruction 
+fetch or decode. Instruction skipping ignores the execution of the currently processed instruction. Powerful attacks 
+can be introduced by using this fault model, such as privilege escalation, a simple key extraction, or a neural network 
+misclassification [135]. It can happen with or without repeating the previous instruction. While the problem of skip -
+ping a single instruction is relatively easy to induce, skipping multiple nearby instructions is more challenging [ 139]. 
+Incorrect data fetch results in uncontrolled bit flips within a read word, or the entire word is read as either all ones or 
+all zeros. This might cause the software to revert to a less secure state since security-critical data is corrupted in this 
+way. Bit-reset faults change bits from one to zero, while bit-set faults flip bits from zero to one. It’s easier to induce 
+single-bit flips than multiple-bit flips, although controlling which specific bit flips is difficult. Changing a read word 
+to a specific value, aside from all ones or zeros, is also difficult to achieve through glitching [140]. Incorrect instruc -
+tion fetch or decode causes the later pipeline stages to evaluate the wrong instruction. Instructions that consist 
+mostly of ones or zeros are easier to trigger via glitching than specific instructions with a mix of ones and zeros. It is 
+challenging to alter a fetched or decoded instruction to a specific arbitrary value due to the difficulty of controlling 
+which bits are flipped by the glitch [141].
+The authors proposed a universal solution for efficiently detecting prominent FIAs [141]. The proposed sensor func -
+tions by translating the consequences of fault attacks into measurable “time” differentials. When an FIA is performed, 
+the altered data will often fail to pass the error detection check, triggering an error-handling routine. This mechanism 
+ensures that any injected faults are recognised before they can cause further damage, such as compromising sensi-
+tive information or leading to incorrect system behaviour. However, while error detection codes are effective, they 
+may not prevent the fault but can help in detecting and mitigating its effects, thus limiting the attack’s success [ 142].
+Fig. 3  Types of fault injection 
+attack
+Table 4  Hardware-based 
+FIA—types of glitches Type of glitches Description References
+Voltage Momentary voltage drops during operations to cause faults [135]
+Clock Modifying clock signals to disrupt timing constraints with glitch pulses [135]
+EM High-intensity EM pulses induce currents in chip circuits [136, 137]
+Optical Uses infrared lasers on exposed silicon die to cause faults [138]
+
+===== PAGE 19 =====
+Vol.:(0123456789)
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w 
+ 
+ Review
+4.6.1  Defense mechanism 1: physical inaccessibility
+In previous work, the authors [143] approach is to make the system’s implementation physically inaccessible to potential 
+attackers. By placing critical components in secure, tamper-resistant environments, such as sealed enclosures or hard-
+ened chips, it becomes significantly more difficult for an adversary to physically access the hardware necessary to inject 
+faults. This method relies on the principle of security through obscurity, where the less accessible the hardware, the lower 
+the chance of successful tampering. For example, systems can be embedded in devices that are difficult to disassemble 
+without destroying the hardware, or they can be enclosed in tamper-evident packaging. Furthermore, shielding tech-
+niques can be used to protect against certain types of electromagnetic or optical fault injection methods. While physical 
+inaccessibility does not provide absolute security, it significantly raises the bar for attackers, making FIAs less feasible.
+4.6.2  Defense mechanism 2: use of nontrivial constants
+Using nontrivial constants in cryptographic algorithms and other sensitive operations can be an effective countermeas-
+ure against FIAs. Fault injections often rely on predictable or trivial constants that, when altered, produce predictable 
+results. By using nontrivial, random, or dynamically generated constants, the effect of a fault injection becomes much 
+harder to predict or exploit [ 143]. For example, in cryptographic algorithms, employing nontrivial constants in a key 
+generation or in the encryption process can thwart fault injection attempts that aim to deduce the key or plaintext. This 
+approach increases the complexity of the attack, as the attacker cannot easily determine the effect of the injected fault, 
+thus reducing the likelihood of successfully compromising the system.
+4.6.3  Defense mechanism 3: fault injection‑resistant Implementations
+A proactive defense mechanism is to search for and adopt implementations that are inherently resistant to FIAs. This 
+involves designing hardware and software in such a way that they are less susceptible to faults, whether intentional 
+or accidental. Fault injection-resistant implementations can be achieved through rigorous testing, formal verification 
+methods, and the use of fault-tolerant design principles [144]. For instance, redundancy in processing, where the same 
+operation is performed multiple times with the results compared for consistency, can help detect and correct faults. 
+Similarly, designing algorithms with inherent resistance to faults-such as those that do not produce exploitable side 
+effects when faults occur-can be a powerful defense. Regular audits and updates to these implementations ensure they 
+remain resistant as new attack techniques emerge.
+4.7  Lattice attack and defenses
+Lattice attacks represent a significant threat to many HE schemes, particularly those based on lattice problems such as 
+LWE and Ring-LWE. These attacks exploit the mathematical structure of lattices to attempt to recover the private key or 
+decrypt ciphertexts. The fundamental approach in lattice attacks involves solving the Shortest Vector Problem (SVP) or 
+the Closest Vector Problem (CVP) in high-dimensional lattices. Attackers typically employ lattice reduction algorithms, 
+such as the Lenstra-Lenstra-Lovász (LLL) algorithm or the Block Korkine-Zolotarev (BKZ) algorithm, to find short vectors 
+in the lattice. The effectiveness of these attacks depends on various factors, including the dimension of the lattice, the 
+quality of the lattice basis, and the specific parameters of the HE scheme. As HE schemes often rely on the hardness of 
+Table 5  Lattice-based 
+homomorphic encryption: key 
+aspects and challenges
+Aspect Description
+Target Private key recovery or ciphertext decryption in lattice-based HE schemes
+Key algorithms LLL, BKZ
+Main challenges SVP , CVP
+Complexity Exponential in lattice dimension for exact solutions
+Key factors Lattice dimension, basis quality, HE scheme parameters
+Common targets LWE-based schemes, Ring-LWE-based schemes
+Defense strategies Increasing lattice dimension, careful parameter selection, noise management
+Trade-offs Security vs. performance and ciphertext size
+
+===== PAGE 20 =====
+Vol:.(1234567890)
+Review  
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w
+Table 6  Types of attacks on homomorphic encryption
+Attack type Description References
+Short vector attacks These attacks attempt to find the shortest vector in a lattice, which corresponds to the private key or a related secret in the cryptographic 
+scheme. This is the foundation of the SVP
+[145, 146]
+LWE attacks These attacks focus on solving the LWE problem, which underpins many HE schemes. The LWE problem involves a system of noisy linear equa-
+tions, and the attacker’s goal is to recover the original variables or the noise
+[147, 148]
+Decoding attacks These attacks involve solving the CVP , where the attacker tries to find a lattice point closest to a given target point (which could represent cipher-
+text or intermediate encrypted data)
+[149]
+Hybrid attacks Hybrid attacks combine lattice reduction techniques with brute-force search over some smaller parts of the key [150]
+
+===== PAGE 21 =====
+Vol.:(0123456789)
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w 
+ 
+ Review
+Table 7  Lattice attacks on homomorphic encryption: concepts and processes
+Category Concept Description
+Foundational problems LWE [151] The LWE involves recovering a secret vector s from samples (a,b = ⟨a, s⟩ + e) where a is a random vector and e is a small error 
+term. This problem forms the basis for numerous lattice-based cryptographic schemes.
+Ring-LWE [152] Ring-LWE operates over polynomial rings, providing enhanced efficiency compared to standard LWE. Samples are of the form 
+(a, b = a ⋅ s + e) where a, s, and e are polynomials.
+Lattice reduction algorithms LLL [153] The Lenstra-Lenstra-Lovász algorithm is a polynomial-time method producing basis vectors of moderate quality. Output vectors 
+are at most 2n∕4 times longer than the shortest vector.
+BKZ [154] Block-Korkine-Zolotarev is a more powerful generalisation of LLL operating on blocks of vectors balancing running time and 
+output quality.
+Core lattice problems SVP [155] The Shortest Vector Problem aims to find a non-zero vector with minimal Euclidean norm in a lattice. Its complexity grows expo-
+nentially with the lattice dimension. Approximate solutions often suffice for attacks.
+CVP [156] The Closest Vector Problem involves finding the lattice vector nearest to a given target vector. It is utilised for ciphertext decryp-
+tion in certain schemes and is generally considered at least as hard as SVP .
+Lattice attack process 1. Lattice construction Build lattice based on public parameters of HE scheme.
+2. Lattice reduction Apply LLL or BKZ to find short vectors.
+3. Information extraction Exploit short vector structure to recover key or decrypt.
+
+===== PAGE 22 =====
+Vol:.(1234567890)
+Review  
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w
+lattice problems for their security, understanding and mitigating lattice attacks is crucial for ensuring the robustness of 
+these cryptographic systems.
+Table 5 provides a concise overview of the key aspects of lattice attacks on HE, highlighting the main algorithms, chal-
+lenges, and factors that influence their effectiveness. It also touches on common defense strategies and the inherent 
+trade-offs in securing HE schemes against these attacks. Table 6 summarizes four types of lattice attacks on Homomorphic 
+encryption, while Table 7 categorizes three lattice problems and explains the underlying concepts and logic.
+4.7.1  Defense mechanism 1: increasing lattice dimension
+In lattice-based cryptography, one of the most effective methods of defending against lattice attacks is to increase the 
+dimension of the lattice. A higher lattice dimension exponentially increases the difficulty for attackers in carrying out 
+a successful attack using current lattice reduction techniques. For example, in HE schemes, increasing the size of the 
+lattice requires larger keys and ciphertexts. This increase in size, however, makes it much more difficult for an attacker 
+to break the encryption or solve the underlying mathematical problems, such as the Shortest Vector Problem (SVP). As 
+demonstrated in Chen’s work, the experimental values of Δ , which represent successful attack instances, decrease as the 
+lattice dimension increases. This indicates that larger lattices provide stronger security because they require significantly 
+more computational resources to attack effectively.
+4.7.2  Defense mechanism 2: noise management
+Proper noise management is another critical defense mechanism in lattice-based cryptographic schemes. The security of 
+these schemes relies heavily on the hardness of the LWE problem, which is closely related to the amount of noise intro-
+duced during the encryption process. By adding sufficient noise, the complexity of the underlying mathematical problem 
+is maintained, making it much more resistant to lattice attacks. However, managing this noise must be done carefully. 
+Too little noise can make the encryption vulnerable to attacks, while too much noise can degrade the performance or 
+render the ciphertext unusable. Properly balanced noise ensures that the encryption remains secure without sacrificing 
+efficiency. Noise management is an essential component in preserving the difficulty of lattice-based problems, thereby 
+protecting against attacks that attempt to exploit weaknesses in the encryption [157]. This technique helps to maintain 
+the robustness of cryptographic schemes against a wide range of attacks.
+4.7.3  Defense mechanism 3: secure parameter selection
+Choose cryptographic parameters (e.g., key size, noise level) carefully to ensure they are resistant to known attacks. 
+Cryptographic libraries and standards like NIST’s post-quantum cryptography project offer guidelines for secure param-
+eter selection [158]. Lattice attacks pose a serious threat to HE schemes, especially those based on lattice problems like 
+LWE and Ring-LWE. These attacks exploit the mathematical structure of lattices to recover private keys or plaintext data, 
+often through lattice reduction algorithms such as LLL or BKZ. To defend against lattice attacks, cryptographic schemes 
+must use high-dimensional lattices, properly manage noise levels, and select secure parameters. By following these best 
+practices, HE can remain secure even against sophisticated lattice-based attacks.
+5  Open research directions
+While HE provides a robust framework for secure data computations, ongoing research is crucial to address emerging 
+threats and improve its efficiency. One of the most pressing challenges lies in enhancing the efficiency of HE schemes. 
+Computational overhead and latency are limiting the development of HE’s practical application. Researchers are explor-
+ing various techniques to mitigate these limitations, including optimised algorithms, hardware acceleration, and parallel 
+processing. These efforts aim to make HE systems more feasible for real-world scenarios by reducing the computational 
+burden associated with encrypted data processing.
+Another critical area of research is post-quantum security. Cybersecurity quantum attacks assume quantum computers 
+are used to attack traditional cryptographic schemes. Traditional cryptographic methods may be vulnerable to quantum 
+attacks, including the current HE system. As a result, researchers are focusing on developing post-quantum HE schemes 
+
+===== PAGE 23 =====
+Vol.:(0123456789)
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w 
+ 
+ Review
+that can withstand future quantum threats. Ensuring that HE remains secure in the post-quantum era is essential to 
+protect encrypted data in the long term.
+Hybrid cryptographic approaches are gaining attention in addition to improving individual HE schemes. Researchers 
+aim to enhance both security and functionality by combining HE with techniques like secure multi-party computation 
+and differential privacy. Hybrid methods leverage the strengths of multiple cryptographic techniques to provide more 
+comprehensive protection for sensitive data. For instance, secure multi-party computation enables secure collaborative 
+computations between multiple parties, while differential privacy ensures that the results of data analysis do not leak 
+individual information, even when using HE.
+Another challenge is scalability, particularly for handling large datasets and complex computations. As more industries 
+seek to implement HE in various applications, it becomes essential to develop scalable HE schemes that can efficiently 
+manage the processing of large data volumes. Researchers are working on creating HE solutions that not only main-
+tain security but also offer the scalability needed for widespread adoption in areas like healthcare, finance, and cloud 
+computing.
+Finally, improving the usability of HE systems is crucial for broader implementation. Many current HE systems are 
+complex and require specialised knowledge to operate, limiting their accessibility to non-experts. Enhancing usability 
+involves developing more intuitive user interfaces, providing clear documentation, and offering training resources to 
+help end-users, particularly in industries where encryption expertise is limited. Making HE more user-friendly will be key 
+to facilitating its adoption across various sectors.
+In conclusion, while HE already offers significant security benefits, there is still much work to be done in terms of 
+improving efficiency, quantum resistance, scalability, and usability. Ongoing research in these areas, as well as hybrid 
+approaches that combine HE with other cryptographic methods, will be critical to ensuring that HE can meet the demands 
+of future applications.
+6  Conclusion
+Healthcare digitises and powers advanced computational techniques for data analysis and service delivery. The impor -
+tance of secure and privacy-preserving technologies like HE cannot be exaggerated. This work has explored HE in health-
+care applications. The focus is on the attacks endangering these systems and the corresponding defense mechanisms. 
+The application of HE in healthcare domains showcases its potential in secure data processing. HE has proved its ability 
+to balance data utility with strict privacy requirements. HE has been applied to secure electronic health records, enable 
+privacy-preserving genomic data analysis, encourage secure medical imaging, and progress privacy-preserving ML tech-
+niques. The emerging fields of secure federated learning, privacy-preserving clinical trials, and secure remote monitoring 
+further show the role of HE in improving the future of healthcare technology.
+However, the adoption of HE in healthcare is challenging. Attacks against HE systems reveal a complex threat landscape 
+requiring robust defense strategies. Side-channel attacks, including timing, power analysis, and EM attacks, have posed 
+considerable risks to the confidentiality of encrypted healthcare data. Key recovery attacks jeopardise the foundational 
+security of HE systems, while CCA, KPA and CPA exploit vulnerabilities in encryption schemes to compromise data integrity 
+and confidentiality. Examining FIA and lattice attacks further highlights the complexity of threats facing HE implementa-
+tions in healthcare. These attacks exploit hardware vulnerabilities and mathematical flaws in cryptographic schemes.
+Various defense mechanisms are studied to respond to the threats. Constant-time algorithms, noise injection, and 
+power analysis countermeasures offer security against side-channel attacks. Key management techniques, including 
+noise flooding, key escrow schemes, and HSMs, strengthen defenses against key recovery attempts. The CCA-secure HE 
+schemes, ciphertext randomisation, and integrity verification mechanisms address vulnerabilities to CCA. For known 
+plaintext and CPA, strategies such as strong cryptographic protocols, data anonymisation, and adaptive security measures 
+provide essential layers of protection. Physical security measures, fault-resistant implementations, and secure parameter 
+selection form the backbone of defenses against fault injection and lattice attacks.
+In conclusion, HE is a powerful tool that provides healthcare with privacy-enhancing technologies. The ongoing 
+development of defense mechanisms offers a promising outlook even though the challenges of various attacks are 
+significant. By addressing current vulnerabilities and expecting future threats, the healthcare industry can harness the 
+full potential of HE to advance patient care, research, and data-driven decision-making while steadfastly protecting 
+individual privacy and data security.
+
+===== PAGE 24 =====
+Vol:.(1234567890)
+Review  
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w
+Acknowledgements This research was supported by Curtin Malaysia Higher Degree Research Grant.
+Author contributions C.H.L—conceptualization, methodology, and writing the manuscript. K.H.L—supervision and review S.E—supervision 
+and review All authors have read and agreed to the published version of the manuscript.
+Data avilability No datasets were generated or analysed during the current study.
+Declarations 
+Competing interests The authors declare no competing interests.
+Open Access  This article is licensed under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License, which 
+permits any non-commercial use, sharing, distribution and reproduction in any medium or format, as long as you give appropriate credit to 
+the original author(s) and the source, provide a link to the Creative Commons licence, and indicate if you modified the licensed material. You 
+do not have permission under this licence to share adapted material derived from this article or parts of it. The images or other third party 
+material in this article are included in the article’s Creative Commons licence, unless indicated otherwise in a credit line to the material. If 
+material is not included in the article’s Creative Commons licence and your intended use is not permitted by statutory regulation or exceeds 
+the permitted use, you will need to obtain permission directly from the copyright holder. To view a copy of this licence, visit http:// creat iveco 
+mmons. org/ licen ses/ by- nc- nd/4. 0/.
+References
+ 1. Yeung AWK, Torkamani A, Butte AJ, Glicksberg BS, Schuller B, Rodriguez B, Ting DS, Bates D, Schaden E, Peng H, et al. The promise of 
+digital healthcare technologies. Front Public Health. 2023;11:1196596.
+ 2. Tertulino R, Antunes N, Morais H. Privacy in electronic health records: a systematic mapping study. J Public Health. 2024;32(3):435–54.
+ 3. Nova K. Generative ai in healthcare: advancements in electronic health records, facilitating medical languages, and personalized patient 
+care. J Adv Anal Healthc Manag. 2023;7(1):115–31.
+ 4. Keshta I, Odeh A. Security and privacy of electronic health records: concerns and challenges. Egypt Inform J. 2021;22(2):177–83.
+ 5. Omboni S, Padwal RS, Alessa T, Benczúr B, Green BB, Hubbard I, Kario K, Khan NA, Konradi A, Logan AG, et al. The worldwide impact of 
+telemedicine during covid-19: current evidence and recommendations for the future. Connect Health. 2022;1:7.
+ 6. Haleem A, Javaid M, Singh RP , Suman R. Telemedicine for healthcare: capabilities, features, barriers, and applications. Sens Int. 2021;2: 
+100117.
+ 7. Hassan M, Awan FM, Naz A, deAndrés-Galiana EJ, Alvarez O, Cernea A, Fernández-Brillet L, Fernández-Martínez JL, Kloczkowski A. Innova-
+tions in genomics and big data analytics for personalized medicine and health care: a review. Int J Mol Sci. 2022;23(9):4645.
+ 8. Gambardella V, Tarazona N, Cejalvo JM, Lombardi P , Huerta M, Roselló S, Fleitas T, Roda D, Cervantes A. Personalized medicine: recent 
+progress in cancer therapy. Cancers. 2020;12(4):1009.
+ 9. Albrecht M, Chase M, Chen H, Ding J, Goldwasser S, Gorbunov S, Halevi S, Hoffstein J, Laine K, Lauter K et al. Homomorphic encryption 
+standard. Protecting privacy through homomorphic encryption; 2021. p. 31–62.
+ 10. Marcolla C, Sucasas V, Manzano M, Bassoli R, Fitzek FH, Aaraj N. Survey on fully homomorphic encryption, theory, and applications. Proc 
+IEEE. 2022;110(10):1572–609.
+ 11. Hamza R, Hassan A, Ali A, Bashir MB, Alqhtani SM, Tawfeeg TM, Yousif A. Towards secure big data analysis via fully homomorphic encryp-
+tion algorithms. Entropy. 2022;24(4):519.
+ 12. Yang Z, Chen Y, Huangfu H, Ran M, Wang H, Li X, Zhang Y. Dynamic corrected split federated learning with homomorphic encryption for 
+u-shaped medical image networks. IEEE J Biomed Health Inform. 2023;27:5946–57.
+ 13. Dutil F, See A, Di Jorio L, Chandelier F. Application of homomorphic encryption in medical imaging; 2021. arXiv preprint arXiv: 2110.  
+07768.
+ 14. Froelicher D, Troncoso-Pastoriza JR, Raisaro JL, Cuendet MA, Sousa JS, Cho H, Berger B, Fellay J, Hubaux J-P . Truly privacy-preserving 
+federated analytics for precision medicine with multiparty homomorphic encryption. Nat Commun. 2021;12(1):5910.
+ 15. Kachouh B, Hariss K, Sliman L, Samhat AE, Alsuliman T. Privacy preservation of genome data analysis using homomorphic encryption. 
+Serv Orient Comput App. 2021;15(4):273–87.
+ 16. Kim M, Song Y, Wang S, Xia Y, Jiang X, et al. Secure logistic regression based on homomorphic encryption: Design and evaluation. JMIR 
+Med Inform. 2018;6(2):8805.
+ 17. Pulido-Gaytan B, Tchernykh A, Cortés-Mendoza JM, Babenko M, Radchenko G, Avetisyan A, Drozdov AY. Privacy-preserving neural net-
+works with homomorphic encryption: challenges and opportunities. Peer-to-Peer Netw App. 2021;14(3):1666–91.
+ 18. Iezzi M. Practical privacy-preserving data science with homomorphic encryption: an overview. In: 2020 IEEE international conference 
+on big data (Big Data). IEEE; 2020. p. 3979–88.
+ 19. Milanov E. The RSA algorithm. RSA Laboratories; 2009. p. 1–11.
+ 20. Paillier P . Paillier encryption and signature schemes. Springer; 2005.
+ 21. Mohammed SJ, Taha DB. Performance evaluation of RSA, elgamal, and paillier partial homomorphic encryption algorithms. In: 2022 
+International conference on computer science and software engineering (CSASE). IEEE; 2022. p. 89–94.
+ 22. Catak FO, Aydin I, Elezaj O, Yildirim-Yayilgan S. Practical implementation of privacy preserving clustering methods using a partially 
+homomorphic encryption algorithm. Electronics. 2020;9(2):229.
+
+===== PAGE 25 =====
+Vol.:(0123456789)
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w 
+ 
+ Review
+ 23. Gentry C. Fully homomorphic encryption using ideal lattices. In: Proceedings of the forty-first annual ACM symposium on theory of 
+computing; 2009. p. 169–78.
+ 24. Munjal K, Bhatia R. A systematic review of homomorphic encryption and its contributions in healthcare industry. Complex Intell Syst. 
+2023;9(4):3759–86.
+ 25. Mahato GK, Chakraborty SK. A comparative review on homomorphic encryption for cloud security. IETE J Res. 2023;69(8):5124–33.
+ 26. Subramaniyaswamy V, Jagadeeswari V, Indragandhi V, Jhaveri RH, Vijayakumar V, Kotecha K, Ravi L. Somewhat homomorphic encryption: 
+ring learning with error algorithm for faster encryption of IOT sensor signal-based edge devices. Secur Commun Netw. 2022;1:2793998.
+ 27. Amorim I, Costa I. Leveraging searchable encryption through homomorphic encryption: a comprehensive analysis. Mathematics. 
+2023;11(13):2948.
+ 28. Rivest RL, Adleman L, Dertouzos ML, et al. On data banks and privacy homomorphisms. Found Secur Comput. 1978;4(11):169–80.
+ 29. Masters O, Hunt H, Steffinlongo E, Crawford J, Bergamaschi F, Rosa MED, Quini CC, Alves CT, Souza F, Ferreira DG. Towards a homomorphic 
+machine learning big data pipeline for the financial services sector. Cryptology ePrint Archive; 2019.
+ 30. Hosseingholizadeh A, Rahmati F, Ali M, Liu X. Homomorphic multi-party computation for internet of medical things. Peer-to-Peer Netw 
+App. 2024;17(6):4049–69.
+ 31. Mouchet CV. Multiparty homomorphic encryption: from theory to practice. EPFL: Technical report; 2023.
+ 32. Gentry C, Halevi S. Implementing gentry’s fully-homomorphic encryption scheme. In: Annual international conference on the theory 
+and applications of cryptographic techniques. Springer; 2011. p. 129–48.
+ 33. Mouchet C, Troncoso-Pastoriza J, Bossuat J-P , Hubaux J-P . Multiparty homomorphic encryption from ring-learning-with-errors. Proc 
+Privacy Enhancing Technol. 2021;2021(4):291–311.
+ 34. Reddi S, Rao PM, Saraswathi P , Jangirala S, Das AK, Jamal SS, Park Y. Privacy-preserving electronic medical record sharing for IOT-enabled 
+healthcare system using fully homomorphic encryption, iota, and masked authenticated messaging. IEEE Trans Ind Inform. 2024. https:// 
+doi. org/ 10. 1109/ TII. 2024. 33973 43.
+ 35. Boneh D, Goh E-J, Nissim K. Evaluating 2-DNF formulas on ciphertexts. In: Theory of cryptography: second theory of cryptography 
+conference, TCC 2005, Cambridge, MA, USA, February 10–12, 2005. proceedings. Springer; 2005. 2:325–341.
+ 36. Brakerski Z, Vaikuntanathan V. Fully homomorphic encryption from ring-LWE and security for key dependent messages. In: Annual 
+cryptology conference. Springer; 2011. p. 505–24.
+ 37. Gentry C, Sahai A, Waters B. Homomorphic encryption from learning with errors: Conceptually-simpler, asymptotically-faster, attribute-
+based. In: Advances in cryptology–CRYPTO 2013: 33rd annual cryptology conference, Santa Barbara, CA, USA, August 18–22, 2013. 
+Proceedings, Part I. Springer; 2013. p. 75–92.
+ 38. Paillier P . Public-key cryptosystems based on composite degree residuosity classes. In: International conference on the theory and 
+applications of cryptographic techniques. Springer; 1999. p. 223–38.
+ 39. Benaloh J. Dense probabilistic encryption. In: Proceedings of the workshop on selected areas of cryptography; 1994. p. 120–8.
+ 40. ElGamal T. A public key cryptosystem and a signature scheme based on discrete logarithms. IEEE Trans Inf Theory. 1985;31(4):469–72.
+ 41. Goldwasser S, Micali S. Probabilistic encryption. J Comput Syst Sci. 1984;28(2):270–99.
+ 42. Rivest DR, Shamir A, Adleman L. RSA (cryptosystem). Arithmetic algorithms and applications; 1978. p. 19.
+ 43. Van Dijk M, Gentry C, Halevi S, Vaikuntanathan V. Fully homomorphic encryption over the integers. In: Advances in cryptology–EURO -
+CRYPT 2010: 29th annual international conference on the theory and applications of cryptographic techniques, French Riviera, May 
+30–June 3, 2010. Proceedings. Springer; 2010. 29:24–43.
+ 44. Brakerski Z, Gentry C, Vaikuntanathan V. (leveled) fully homomorphic encryption without bootstrapping. ACM Trans Comput Theory 
+TOCT. 2014;6(3):1–36.
+ 45. Fan J, Vercauteren F. Somewhat practical fully homomorphic encryption. Cryptology ePrint Archive; 2012.
+ 46. Chillotti I, Gama N, Georgieva M, Izabachene M. Faster fully homomorphic encryption: bootstrapping in less than 0.1 seconds. In: 
+Advances in cryptology–ASIACRYPT 2016: 22nd international conference on the theory and application of cryptology and information 
+security, Hanoi, Vietnam, December 4–8, 2016, Proceedings, Part I. Springer; 2016. 22:3–33.
+ 47. Cheon JH, Kim A, Kim M, Song Y. Homomorphic encryption for arithmetic of approximate numbers. In: Advances in cryptology–ASIA -
+CRYPT 2017: 23rd international conference on the theory and applications of cryptology and information security, Hong Kong, China, 
+December 3-7, 2017, Proceedings, Part I. Springer; 2017. 23:409–37.
+ 48. Ducas L, Micciancio D. Fhew: bootstrapping homomorphic encryption in less than a second. In: Annual international conference on the 
+theory and applications of cryptographic techniques. Springer; 2015. p. 617–40.
+ 49. Halevi S, Shoup V. Design and implementation of a homomorphic-encryption library. IBM Res (Manuscript). 2013;6(12–15):8–36.
+ 50. Gorantala S, Springer R, Gipson B. Unlocking the potential of fully homomorphic encryption. Commun ACM. 2023;66(5):72–81.
+ 51. Wood A, Najarian K, Kahrobaei D. Homomorphic encryption for machine learning in medicine and bioinformatics. ACM Comput Surv 
+(CSUR). 2020;53(4):1–35.
+ 52. Ma J, Naas S-A, Sigg S, Lyu X. Privacy-preserving federated learning based on multi-key homomorphic encryption. Int J Intell Syst. 
+2022;37(9):5880–901.
+ 53. Liu C, Jiang ZL, Zhao X, Chen Q, Fang J, He D, Zhang J, Wang X. Efficient and privacy-preserving logistic regression scheme based on 
+leveled fully homomorphic encryption. In: IEEE INFOCOM 2022-IEEE conference on computer communications workshops (INFOCOM 
+WKSHPS). IEEE; 2022. p. 1–6.
+ 54. Fauser M, Zhang P . Detection of cyber attacks in encrypted control systems. In: 2022 American control conference (ACC). IEEE; 2022. p. 
+4992–7.
+ 55. Kohli R, Tan SS-L. Electronic health records. Mis Quart. 2016;40(3):553–74.
+ 56. Lessage X, Collier L, Van Ouytsel C-HB, Legay A, Mahmoudi S, Massonet P . Secure federated learning applied to medical imaging with 
+fully homomorphic encryption. In: 2024 IEEE 3rd international conference on AI in cybersecurity (ICAIC). IEEE; 2024. p. 1–12.
+ 57. Vamsi D, Reddy P . Electronic health record security in cloud: Medical data protection using homomorphic encryption schemes. In: 
+Research anthology on securing medical systems and records. IGI Global, Hershey; 2022. p. 853–77.
+
+===== PAGE 26 =====
+Vol:.(1234567890)
+Review  
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w
+ 58. Kumar R, Kumar J, Khan AA, Ali H, Bernard CM, Khan RU, Zeng S, et al. Blockchain and homomorphic encryption based privacy-preserving 
+model aggregation for medical images. Comput Med Imaging Graph. 2022;102: 102139.
+ 59. Zhang L, Xu J, Vijayakumar P , Sharma PK, Ghosh U. Homomorphic encryption-based privacy-preserving federated learning in IOT-enabled 
+healthcare system. IEEE Trans Netw Sci Eng. 2022;10(5):2864–80.
+ 60. Yang W, Wang S, Cui H, Tang Z, Li Y. A review of homomorphic encryption for privacy-preserving biometrics. Sensors. 2023;23(7):3566.
+ 61. Fang H, Qian Q. Privacy preserving machine learning with homomorphic encryption and federated learning. Future Internet. 
+2021;13(4):94.
+ 62. Banabilah S, Aloqaily M, Alsayed E, Malik N, Jararweh Y. Federated learning review: fundamentals, enabling technologies, and future 
+applications. Inf Process Manag. 2022;59(6): 103061.
+ 63. Hijazi NM, Aloqaily M, Guizani M, Ouni B, Karray F. Secure federated learning with fully homomorphic encryption for IOT communica-
+tions. IEEE Internet Things J. 2023;11:4289–300.
+ 64. Xie Q, Jiang S, Jiang L, Huang Y, Zhao Z, Khan S, Dai W, Liu Z, Wu K. Efficiency optimization techniques in privacy-preserving federated 
+learning with homomorphic encryption: a brief survey. IEEE Internet Things J. 2024;11(14):24569–80.
+ 65. Wibawa F, Catak FO, Kuzlu M, Sarp S, Cali U. Homomorphic encryption and federated learning based privacy-preserving cnn training: 
+Covid-19 detection use-case. In: Proceedings of the 2022 European interdisciplinary cybersecurity conference; 2022. p. 85–90.
+ 66. Piantadosi S. Clinical trials: a methodologic perspective. New Jersey: John Wiley & Sons; 2024.
+ 67. Paddock S, Abedtash H, Zummo J, Thomas S. Proof-of-concept study: homomorphically encrypted data can support real-time learning 
+in personalized cancer medicine. BMC Med Inform Decis Mak. 2019;19:1–10.
+ 68. Sheu R-K, Lin Y-C, Pardeshi MS, Huang C-Y, Pai K-C, Chen L-C, Huang C-C. Adaptive autonomous protocol for secured remote healthcare 
+using fully homomorphic encryption (AUTOPRO-RHC). Sensors. 2023;23(20):8504.
+ 69. Bokhari MU, Masroor A, Hanafi B. Securing data transmission channels between smart devices and the cloud using homomorphic 
+encryption for blood pressure monitoring sensors. Int J Inf Technol. 2024;17:1–11.
+ 70. Mittal P , Vashista H, Srivastava A. A novel technique to secure telemedicine using blockchain and visual cryptography. In: International 
+conference on cryptology & network security with machine learning. Springer; 2023. p. 191–214.
+ 71. Aydin F, Aysu A. Leaking secrets in homomorphic encryption with side-channel attacks. J Cryptogr Eng. 2024. https:// doi. org/ 10. 21203/ 
+rs.3. rs- 30977 27/ v1.
+ 72. Devi M, Majumder A. Side-channel attack in internet of things: a survey. In: Applications of internet of things: proceedings of ICCCIOT 
+2021. Springer; 2020. p. 213–22.
+ 73. Lipp M, Kogler A, Oswald D, Schwarz M, Easdon C, Canella C, Gruss D. Platypus: Software-based power side-channel attacks on x86. In: 
+2021 IEEE symposium on security and privacy (SP). IEEE; 2021. p. 355–71.
+ 74. Kocher PC. Timing attacks on implementations of Diffie-Hellman, RSA, DSS, and other systems. In: Advances in cryptology-CRYPTO’96: 
+16th annual international cryptology conference Santa Barbara, California, USA August 18–22, 1996 Proceedings. Springer; 
+1996;16:104–13.
+ 75. Wei C, Hong G, Wang A, Wang J, Sun S, Ding Y, Zhu L, Ma W. Time is not enough: timing leakage analysis on cryptographic chips via 
+plaintext-ciphertext correlation in non-timing channel. IEEE Trans Inf For Secur. 2024. https:// doi. org/ 10. 1109/ TIFS. 2024. 34491 19.
+ 76. Cheng W, Danger J-L, Guilley S, Huang F, Korchi AB, Rioul O. Cache-timing attack on the seal homomorphic encryption library. In: 11th 
+international workshop on security proofs for embedded systems (PROOFS 2022); 2022.
+ 77. Chaturvedi B, Chakraborty A, Chatterjee A, Mukhopadhyay D. Error leakage using timing channel in FHE ciphertexts from TFHE library. 
+Cryptology ePrint Archive; 2022.
+ 78. Randolph M, Diehl W. Power side-channel attack analysis: a review of 20 years of study for the layman. Cryptography. 2020;4(2):15.
+ 79. Lathrop L. Differential power analysis attacks on different implementations of aes with the chipwhisperer nano. Cryptology ePrint 
+Archive; 2020.
+ 80. Park J, Anandakumar NN, Saha D, Mehta D, Pundir N, Rahman F, Farahmandi F, Tehranipoor MM. PQC-SEP: power side-channel evaluation 
+platform for post-quantum cryptography algorithms. IACR Cryptol ePrint Arch. 2022;2022:527.
+ 81. Kocher P . Differential power analysis. In: Proc. Advances in cryptology (CRYPTO’99); 1999.
+ 82. Aydin F, Karabulut E, Potluri S, Alkim E, Aysu A. Reveal: Single-trace side-channel leakage of the seal homomorphic encryption library. 
+In: 2022 design, automation & test in Europe conference & exhibition (DATE). IEEE; 2022. p. 1527–32.
+ 83. Tehranipoor M, Nalla Anandakumar N, Farahmandi F. Power analysis attacks on AES. In: Hardware security training hands-on! Cham: 
+Springer; 2023. p. 137–61.
+ 84. Ngo K, Dubrova E, Guo Q, Johansson T. A side-channel attack on a masked IND-CCA secure saber kem implementation. IACR Transactions 
+on Cryptographic Hardware and Embedded Systems. 2021;2021:676–707.
+ 85. Danial J, Das D, Golder A, Ghosh S, Raychowdhury A, Sen S. EM-X-DL: Efficient cross-device deep learning side-channel attack with noisy 
+em signatures. ACM J Emerg Technol Comput Syst (JETC). 2021;18(1):1–17.
+ 86. Liu Z, Samwel N, Weissbart L, Zhao Z, Lauret D, Batina L, Larson M. Screen gleaning: a screen reading tempest attack on mobile devices 
+exploiting an electromagnetic side channel; 2020. arXiv preprint arXiv: 2011. 09877.
+ 87. Das D, Sen S. Electromagnetic and power side-channel analysis: advanced attacks and low-overhead generic countermeasures through 
+white-box approach. Cryptography. 2020;4(4):30.
+ 88. Ramsay C, Lohuis J. Tempest attacks against aes. Fox-IT, Fremont, CA, USA, Tech. Rep; 2017.
+ 89. Liu S, Yi W. Task parameters analysis in schedule-based timing side-channel attack. IEEE Access. 2020;8:157103–15.
+ 90. Almeida JB, Barbosa M, Barthe G, Dupressoir F. Verifiable side-channel security of cryptographic implementations: constant-time mee-
+CBC. In: Fast Software Encryption: 23rd international conference, FSE 2016, Bochum, Germany, March 20–23, 2016, Revised Selected 
+Papers. Springer; 2016. 23:163–84.
+ 91. Cauligi S, Disselkoen C, Gleissenthall Kv, Tullsen D, Stefan D, Rezk T, Barthe G. Constant-time foundations for the new spectre era. In: 
+Proceedings of the 41st ACM SIGPLAN conference on programming language design and implementation; 2020. p. 913–26.
+
+===== PAGE 27 =====
+Vol.:(0123456789)
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w 
+ 
+ Review
+ 92. Das D, Maity S, Nasir SB, Ghosh S, Raychowdhury A, Sen S. High efficiency power side-channel attack immunity using noise injection 
+in attenuated signature domain. In: 2017 IEEE international symposium on hardware oriented security and trust (HOST). IEEE; 2017. p. 
+62–7.
+ 93. Das D, Maity S, Nasir SB, Ghosh S, Raychowdhury A, Sen S. Asni: Attenuated signature noise injection for low-overhead power side-
+channel attack immunity. IEEE Trans Circ Syst I: Regular Papers. 2018;65(10):3300–11.
+ 94. Rezaei H, Shafieinejad A. Bit-parallel ECC coprocessor resistant to differential power analysis attacks in gf (2m). J Comput Secur. 
+2021;8(1):1–18.
+ 95. Wang M, Iyer VV, Xie S, Li G, Mathew SK, Kumar R, Orshansky M, Yilmaz AE, Kulkarni JP . Physical design strategies for mitigating fine-
+grained electromagnetic side-channel attacks. In: 2021 IEEE custom integrated circuits conference (CICC). IEEE; 2021. p. 1–2.
+ 96. Chaturvedi B, Chakraborty A, Chatterjee A, Mukhopadhyay D. “ask and thou shall receive”: Reaction-based full key recovery attacks 
+on fhe. In: European symposium on research in computer security. Springer; 2024. p. 457–77.
+ 97. De Santis F, Rechberger C. Towards private deep learning-based side-channel analysis using homomorphic encryption. In: Con-
+structive side-channel analysis and secure design: 15th international workshop, COSADE 2024, Gardanne, France, April 9–10, 2024, 
+Proceedings. Springer Nature; 2024. 14595:133.
+ 98. Guo Q, Nabokov D, Suvanto E, Johansson T. Key recovery attacks on approximate homomorphic encryption with non-worst-case 
+noise flooding countermeasures. In: Usenix Security; 2024.
+ 99. Chenal M, Tang Q. On key recovery attacks against existing somewhat homomorphic encryption schemes. In: Progress in cryptology-
+LATINCRYPT 2014: third international conference on cryptology and information security in Latin America Florianópolis, Brazil, 
+September 17–19, 2014 Revised Selected Papers. Springer; 2015. 3:239–58.
+ 100. Al Badawi A, Bates J, Bergamaschi F, Cousins DB, Erabelli S, Genise N, Halevi S, Hunt H, Kim A, Lee Y. et al.: Openfhe: Open-source 
+fully homomorphic encryption library. In: Proceedings of the 10th workshop on encrypted computing & applied homomorphic 
+cryptography; 2022. p. 53–63.
+ 101. Li B, Micciancio D, Schultz M, Sorrell J. Securing approximate homomorphic encryption using differential privacy. In: Annual inter -
+national cryptology conference. Springer; 2022. p. 560–89.
+ 102. Ali S, Wadho SA, Yichiet A, Gan ML, Lee CK. Advancing cloud security: unveiling the protective potential of homomorphic secret 
+sharing in secure cloud computing. Egypt Inform J. 2024;27: 100519.
+ 103. Zhao Y, Pan S, Ma H, Gao Y, Song X, He J, Jin Y. Side channel security oriented evaluation and protection on hardware implementa-
+tions of Kyber. IEEE Trans Circ Syst I Regular Papers. 2023. https:// doi. org/ 10. 1109/ TCSI. 2023. 32886 00.
+ 104. Yang M, Ahmed T, Inagaki S, Sakiyama K, Li Y, Hara-Azumi Y. Hardware/software cooperative design against power side-channel 
+attacks on IOT devices. IEEE Internet Things J. 2024;11:16758–68.
+ 105. Kadykov V, Levina A, Voznesensky A. Homomorphic encryption within lattice-based encryption system. Procedia Comput Sci. 
+2021;186:309–15.
+ 106. Gaborit P , Deneuville JC. Code-based cryptography. In: Concise encyclopedia of coding theory. Florida: Chapman and Hall/CRC; 
+2021. p. 799–822.
+ 107. Qiao K, Sun S, Wang Z, Wu Z, Cheng J, Wang A, Zhu L. A closer look at the belief propagation algorithm in side-channel-assisted 
+chosen-ciphertext attacks. Cryptology ePrint Archive; 2024.
+ 108. Cheon JH, Choe H, Passelègue A, Stehlé D, Suvanto E. Attacks against the indcpa-d security of exact fhe schemes. Cryptology ePrint 
+Archive; 2024.
+ 109. Beck G, Zinkus M, Green M. Automating the development of chosen ciphertext attacks. In: 29th USENIX security symposium (USENIX 
+Security 20); 2020. p. 1821–37.
+ 110. Chen H, Galteland YJ, Liang K. Cca-1 secure updatable encryption with adaptive security. In: International conference on the theory 
+and application of cryptology and information security. Springer; 2023. p. 374–406.
+ 111. Manulis M, Nguyen J. Fully homomorphic encryption beyond ind-cca1 security: Integrity through verifiability. In: Annual interna-
+tional conference on the theory and applications of cryptographic techniques. Springer; 2024. p. 63–93.
+ 112. Faonio A, Fiore D. Improving the efficiency of re-randomizable and replayable cca secure public key encryption. In: Applied cryp -
+tography and network security: 18th international conference, ACNS 2020, Rome, Italy, October 19–22, 2020, Proceedings, Part I. 
+Springer; 2020. 18:271–91.
+ 113. Steffen S, Bichsel B, Baumgartner R, Vechev M. Zeestar: Private smart contracts by homomorphic encryption and zero-knowledge 
+proofs. In: 2022 IEEE symposium on security and privacy (SP). IEEE; 2022. p. 179–97.
+ 114. Cho J, Ha J, Kim S, Lee B, Lee J, Lee J, Moon D, Yoon H. Transciphering framework for approximate homomorphic encryption. In: 
+International conference on the theory and application of cryptology and information security. Springer; 2021. p. 640–69.
+ 115. Hébant C, Phan DH, Pointcheval D. Linearly-homomorphic signatures and scalable mix-nets. In: Public-key cryptography–PKC 2020: 
+23rd IACR international conference on practice and theory of public-key cryptography, Edinburgh, UK, May 4–7, 2020, Proceedings, 
+Part II. Springer; 2020. 23:597–627.
+ 116. Kim J, Yun A. Secure fully homomorphic authenticated encryption. IEEE Access. 2021;9:107279–97.
+ 117. Awadallah R, Samsudin A. Homomorphic encryption for cloud computing and its challenges. In: 2020 IEEE 7th international confer -
+ence on engineering technologies and applied sciences (ICETAS). IEEE; 2020. p. 1–6.
+ 118. Rupa C, Greeshmanth Shah MA. Novel secure data protection scheme using Martino homomorphic encryption. J Cloud Comput. 
+2023;12(1):47.
+ 119. Kanaga Priya P , Sivaranjani R, Thangaraj K, Alsharabi N. Various attacks on the implementation of cryptographic algorithms. In: 
+Homomorphic encryption for financial cryptography: recent inventions and challenges. Springer, New York; 2023. p. 221–58.
+ 120. Drăgulinescu A. Optical correlators for cryptosystems and image recognition: a review. Sensors. 2023;23(2):907.
+ 121. Choi S, Lee HT. Known plaintext attacks on the omar and abed homomorphic encryption scheme. In: 2022 13th international confer -
+ence on information and communication technology convergence (ICTC). IEEE; 2022. p. 154–7.
+
+===== PAGE 28 =====
+Vol:.(1234567890)
+Review  
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w
+ 122. Babenko M, Chervyakov N, Tchernykh A, Kucherov N, Deryabin M, Radchenko G, Navaux PO, Svyatkin V. Security analysis of homo -
+morphic encryption scheme for cloud computing: Known-plaintext attack. In: 2018 IEEE Conference of Russian Young Researchers 
+in Electrical and Electronic Engineering (EIConRus), 2018;70–274. IEEE.
+ 123. Trepacheva A, Babenko L. Known plaintexts attack on polynomial based homomorphic encryption. In: Proceedings of the 7th 
+international conference on security of information and networks; 2014. p. 57–165.
+ 124. Liu X, Xie L, Wang Y, Zou J, Xiong J, Ying Z, Vasilakos AV. Privacy and security issues in deep learning: a survey. IEEE Access. 2020;9:4566–93.
+ 125. Hariss K, Noura H. Towards a fully homomorphic symmetric cipher scheme resistant to plain-text/cipher-text attacks. Multimedia Tools 
+App. 2022;81(10):14403–49.
+ 126. Abd Razak S, Nazari NHM, Al-Dhaqm A. Data anonymization using pseudonym system to preserve data privacy. IEEE Access. 
+2020;8:43256–64.
+ 127. Gutfleisch M, Klemmer JH, Busch N, Acar Y, Sasse MA, Fahl S. How does usable security (not) end up in software products? results from 
+a qualitative interview study. In: 2022 IEEE symposium on security and privacy (SP). IEEE; 2022. p. 893–910.
+ 128. Li B, Micciancio D. On the security of homomorphic encryption on approximate numbers. In: Annual international conference on the 
+theory and applications of cryptographic techniques. Springer; 2021. p. 648–77.
+ 129. Balamurugan C, Singh K, Ganesan G, Rajarajan M. Post-quantum and code-based cryptography-some prospective research directions. 
+Cryptography. 2021;5(4):38.
+ 130. Mathews MM, Panchami V, Ajith V. Quantum cryptanalysis of affine cipher. IEEE J Emerg Select Topics Circ Syst. 2024. https:// doi. org/ 10. 
+21203/ rs.3. rs- 16123 63/ v1.
+ 131. Bhasin S, D’Anvers J-P , Heinz D, Pöppelmann T, Van Beirendonck M. Attacking and defending masked polynomial comparison for lattice-
+based cryptography. IACR Trans Cryptogr Hardware Embedded Syst. 2021. https:// doi. org/ 10. 46586/ tches. v2021. i3. 334- 359.
+ 132. Zhu S, Zhu C, Li X. An efficient chosen-plaintext attack and improvement on an image encryption algorithm based on cyclicshift and 
+multiple chaotic map. Multimedia Tools App. 2023;82(15):22835–52.
+ 133. Rangarajan N, Knechtel J, Limaye N, Sinanoglu O, Amrouch H. A novel attack mode on advanced technology nodes exploiting transistor 
+self-heating. IEEE Trans Comput Aided Des Integr Circ Syst. 2022;41(11):4134–44.
+ 134. Ravi P , Chattopadhyay A, D’Anvers JP , Baksi A. Side-channel and fault-injection attacks over lattice-based post-quantum schemes (Kyber, 
+Dilithium): Survey and new results. ACM Trans Embedded Comput Syst. 2024;23(2):1–54.
+ 135. Breier J, Hou X. How practical are fault injection attacks, really? IEEE Access. 2022;10:113122–30.
+ 136. Nishiyama H, Fujimoto D, Sone H, Hayashi Y. Efficient noninvasive fault injection method utilizing intentional electromagnetic interfer-
+ence. IEEE Trans Electromagn Compatibil. 2023;65(4):1211–9.
+ 137. Kumar R, Varna AL, Tokunaga C, Taneja S, De V, Mathew SK. A 100-gbps fault-injection attack-resistant AES-256 engine with 99.1%-99.99% 
+error coverage in intel 4 CMOS. IEEE J Solid State Circ. 2023. https:// doi. org/ 10. 1109/ JSSC. 2023. 33051 88.
+ 138. Lavdas L, Rahman MT, Tehranipoor M, Asadizanjani N. On optical attacks making logic obfuscation fragile. In: 2020 IEEE international 
+test conference in Asia (ITC-Asia). IEEE; 2020. p. 71–6.
+ 139. Xagawa K, Ito A, Ueno R, Takahashi J, Homma N. Fault-injection attacks against NIST’s post-quantum cryptography round 3 kem can-
+didates. In: Advances in cryptology–ASIACRYPT 2021: 27th international conference on the theory and application of cryptology and 
+information security, Singapore, December 6–10, 2021, Proceedings, Part II. Springer; 2021. 27:33–61.
+ 140. Reda HT, Anwar A, Mahmood A. Comprehensive survey and taxonomies of false data injection attacks in smart grids: attack models, 
+targets, and impacts. Renew Sustain Energy Rev. 2022;163: 112423.
+ 141. Muttaki MR, Rahman MH, Kulkarni A, Tehranipoor M, Farahmandi F. Ftc: A universal framework for fault-injection attack detection and 
+prevention. IEEE Trans Very Large Scale Integr VLSI Syst. 2024;32:1311–24.
+ 142. Jiang H, Zhu X, Han J. Instruction-fetching attack and practice in collision fault attack on AES. Symmetry. 2022;14(10):2201.
+ 143. Barenghi A, Breveglieri L, Koren I, Naccache D. Fault injection attacks on cryptographic devices: theory, practice, and countermeasures. 
+Proc IEEE. 2012;100(11):3056–76.
+ 144. Tehranipoor M, Pundir N, Vashistha N, Farahmandi F. Fault injection resistant cryptographic hardware. In: Hardware security primitives. 
+Springer: Cham; 2022. p. 333–46.
+ 145. Sun Z, Gu C, Zheng Y. A review of sieve algorithms in solving the shortest lattice vector problem. IEEE Access. 2020;8:190475–86.
+ 146. Pan Y, Xu J, Wadleigh N, Cheng Q. On the ideal shortest vector problem over random rational primes. In: Advances in Cryptology–EURO-
+CRYPT 2021: 40th annual international conference on the theory and applications of cryptographic techniques, Zagreb, Croatia, October 
+17–21, 2021, Proceedings, Part I. Springer; 2021. 40:559–83.
+ 147. Albrecht M, Ducas L. Lattice attacks on ntru and lwe: a history of refinements. Cryptology ePrint Archive; 2021.
+ 148. Guo Q, Johansson T. Faster dual lattice attacks for solving lwe with applications to crystals. In: Advances in Cryptology–ASIACRYPT 2021: 
+27th international conference on the theory and application of cryptology and information security, Singapore, December 6–10, 2021, 
+Proceedings, Part IV. Springer; 2021. 27:33–62.
+ 149. Laarhoven T, Walter M. Dual lattice attacks for closest vector problems (with preprocessing). In: Cryptographers’ track at the RSA confer-
+ence. Springer; 2021. p. 478–502.
+ 150. Bi L, Lu X, Luo J, Wang K, Zhang Z. Hybrid dual attack on LWE with arbitrary secrets. Cybersecurity. 2022;5(1):15.
+ 151. Regev O. On lattices, learning with errors, random linear codes, and cryptography. J ACM (JACM). 2009;56(6):1–40.
+ 152. Ding J, Xie X, Lin X. A simple provably secure key exchange scheme based on the learning with errors problem. Cryptology ePrint Archive; 
+2012.
+ 153. Lenstra AK, Lenstra HW, Lovász L. Factoring polynomials with rational coefficients. Mathematische annalen. 1982;261:515–34.
+ 154. Schnorr C-P , Euchner M. Lattice basis reduction: improved practical algorithms and solving subset sum problems. Math Progr. 
+1994;66:181–99.
+ 155. Micciancio D, Goldwasser S. Shortest vector problem. In: Complexity of lattice problems: a cryptographic perspective. Springer: Berlin; 
+2002. p. 69–90.
+ 156. Micciancio D, Goldwasser S, Micciancio D, Goldwasser S. Closest vector problem. Complexity of lattice problems: a cryptographic per -
+spective; 2002. p. 45–68.
+
+===== PAGE 29 =====
+Vol.:(0123456789)
+Discover Public Health          (2025) 22:137  | https://doi.org/10.1186/s12982-025-00505-w 
+ 
+ Review
+ 157. Bergamaschi F, Costache A, Dachman-Soled D, Kippen H, LaBuff L, Tang R. Revisiting the security of approximate FHE with noise-flooding 
+countermeasures. Cryptology ePrint Archive, Paper 2024/424; 2024. https:// eprint. iacr. org/ 2024/ 424.
+ 158. Cheon JH, Son Y, Yhee D. Practical FHE parameters against lattice attacks. J Korean Math Soc. 2022;59(1):35–51.
+Publisher’s Note Springer Nature remains neutral with regard to jurisdictional claims in published maps and institutional affiliations.

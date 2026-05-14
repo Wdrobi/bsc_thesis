@@ -1,0 +1,1095 @@
+
+
+===== PAGE 1 =====
+Open Access
+© The Author(s) 2025. Open Access  This article is licensed under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 
+International License, which permits any non-commercial use, sharing, distribution and reproduction in any medium or format, as long 
+as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons licence, and indicate if you 
+modified the licensed material. You do not have permission under this licence to share adapted material derived from this article or parts of 
+it. The images or other third party material in this article are included in the article’s Creative Commons licence, unless indicated otherwise 
+in a credit line to the material. If material is not included in the article’s Creative Commons licence and your intended use is not permitted 
+by statutory regulation or exceeds the permitted use, you will need to obtain permission directly from the copyright holder. To view a copy 
+of this licence, visit http:// creat iveco mmons. org/ licen ses/ by- nc- nd/4. 0/.
+RESEARCH
+Naresh and Reddi  Journal of Big Data           (2025) 12:52  
+https://doi.org/10.1186/s40537-025-01098-6
+Journal of Big Data
+Exploring the future of privacy-preserving 
+heart disease prediction: a fully homomorphic 
+encryption-driven logistic regression approach
+Vankamamidi S. Naresh1*† and Sivaranjani Reddi2† 
+Abstract 
+Homomorphic Encryption (HE) offers a revolutionary cryptographic approach to safe-
+guarding privacy in machine learning (ML), especially in processing sensitive healthcare 
+data. This study aims to address the critical issue of privacy-preserving heart disease 
+prediction by developing a novel Homomorphic Encryption-Driven Logistic Regression 
+(HELR) framework, leveraging the Cheon-Kim-Kim-Song (CKKS) encryption scheme. 
+The framework was implemented using the TenSeal and Torch libraries and evaluated 
+on encrypted heart disease datasets with varying polynomial degrees. The study’s 
+design involved applying the HELR model to three healthcare datasets and compar-
+ing its performance with Support Vector Machines (SVM). The major findings revealed 
+that the HELR model achieved high accuracy, within 1% to 3% of its non-HE counter-
+part, while maintaining competitive computational efficiency. Furthermore, the HELR 
+framework demonstrated robust security against various privacy attacks, including poi-
+soning, evasion, member inference, model inversion, and model extraction, at dif-
+ferent ML stages. Notably, the HELR model outperformed SVM in terms of accuracy, 
+showcasing its effectiveness for secure healthcare predictions. The results suggest 
+that HE-enhanced models can offer secure, accurate predictions, paving the way 
+for advancements in privacy-preserving healthcare analytics. However, the study iden-
+tified limitations related to the computational overhead introduced by HE and the scal-
+ability of the model for large datasets. Future work will focus on optimizing encryption 
+techniques and exploring parallel processing methods to address these challenges.
+Keywords: CKKS, Gradient Descent, Healthcare, Heart disease prediction, 
+Homomorphic Encryption, Logistic Regression
+Introduction
+Machine learning (ML) has attracted considerable attention because of its ability to 
+address real-world challenges across diverse domains such as artificial intelligence, bio -
+informatics, medical sciences, and marketing. ML can extract valuable insights from 
+extensive datasets without requiring deep domain-specific expertise. However, the 
+healthcare industry faces a significant hurdle in safeguarding patient privacy and sensi -
+tive medical information.
+†Vankamamidi S. Naresh and 
+Sivaranjani Reddi have Equal 
+Contributions.
+*Correspondence:   
+vsnaresh111@srivasaviengg.ac.in
+1 Department of Computer 
+Science and Engineering, Sri 
+Vasavi Engineering College, 
+Tadepalligudeam 534101, 
+Andhra Pradesh, India
+2 Department of Computer 
+Science and Engineering, 
+Raghu Engineering College, 
+Visakhapatnam, India
+
+===== PAGE 2 =====
+Page 2 of 27Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+Homomorphic Encryption (HE) (Salim (2022)) [16] has emerged as a compelling solu -
+tion for addressing this concern. HE encryption technique permits specific mathematical 
+operations to be executed on encrypted data without decryption. This capability enables 
+computations to be performed directly on encrypted data, with the results remaining 
+encrypted. This feature is particularly advantageous when sensitive data must be pro -
+cessed in untrusted environments or by third parties, to ensure privacy and security.
+Traditional privacy-preserving techniques in ML [17, 18, 26], such as anonymization, 
+perturbation, randomization, and condensation, aim to protect privacy but often incur 
+information loss and reduce data utility. Differential privacy, while practical, introduces 
+noise that may compromise the accuracy of the ML models. In contrast, combining HE 
+with logistic regression Zhou [23], Wei [24], Duchi [2], Machanavajjhala [1] facilitates 
+privacy-preserving computations without sacrificing data utility or accuracy. Gupta, R. 
+et  al. [30] Introduces a quantum machine learning-based model to predict malicious 
+users in cloud networks, leveraging quantum algorithms to enhance anomaly detec -
+tion and bolster network security. Gupta, R. et al. [31], Proposes a framework for secur -
+ing IoT systems integrated with cloud services, addressing data privacy and integrity 
+challenges through innovative security mechanisms. Later in the same year Gupta, R. 
+et al. [32], Develops a privacy-preserving model for medical data using differential pri -
+vacy and tri phase adaptive learning, ensuring data protection while maintaining utility 
+and accuracy. In addition to it, Gupta, R. et al. [33], Presents a machine learning model 
+incorporating differential privacy for secure data classification in cloud environments, 
+suitable for privacy-sensitive applications. Gupta, R. et al. [34], Introduces a differential 
+privacy-based model for handling sensitive data in multimedia and application-driven 
+contexts, ensuring confidentiality without sacrificing usability.
+Given the drawbacks of differential privacy and traditional methods, a framework that 
+integrates HE with logistic regression is essential. The CKKS scheme, a variant of HE 
+tailored for real-number operations, supports batch processing and efficient handling 
+of large datasets. This makes it well-suited for constructing logistic regression models 
+using encrypted healthcare data, ensuring that patient privacy is maintained throughout 
+the process.
+The motivation for this research is to address the pressing need for privacy-preserv -
+ing heart disease prediction systems that balance robust data security with predictive 
+accuracy. By leveraging FHE, the proposed approach ensures that patient data remains 
+secure throughout the computational process, fostering trust in predictive analytics 
+systems while adhering to stringent privacy regulations. This study aims to advance the 
+future of secure healthcare analytics by demonstrating the feasibility and effectiveness 
+of a fully homomorphic encryption-driven logistic regression model for heart disease 
+prediction.
+In healthcare, HE holds promise despite its limited application in practical ML tasks, 
+particularly in integration with logistic regression (Wibowo [19], Yu [20]) models. Logis-
+tic regression is a widely adopted ML method for classification, owing to its simplicity 
+and competitive prediction accuracy. It is a foundational element in more complex clas -
+sification algorithms such as gradient boosting. Logistic regression is a relatively light -
+weight algorithm suitable for execution on mobile devices with limited computational 
+resources. Mobile devices can participate in federated learning by locally training logistic 
+
+===== PAGE 3 =====
+Page 3 of 27
+Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+ 
+regression models on their own data and sending updates to a central server for aggrega-
+tion, this study proposes a framework for an HE-aware logistic regression model using 
+the CKKS scheme to predict medical outcomes based on patient data. For instance, the 
+model can forecast the probability of a patient developing a specific medical condition 
+based on their medical history and pertinent factors. Training the model on encrypted 
+healthcare data guarantees that patient privacy remains protected during each stage of 
+analysis.
+Contributions
+The key contributions of this study are:
+1. HE-Driven Logistic Regression Model A logistic regression model leveraging CKKS 
+homomorphic encryption was developed to ensure data privacy without compro -
+mising accuracy.
+2. Robust Security Analysis The system demonstrated strong resilience against threats 
+like poisoning, evasion, membership inference, model inversion, and extraction 
+attacks.
+3. Effective Performance Evaluation Tested on Kaggle healthcare datasets using Ten -
+SEAL, the model maintained high accuracy and practicality while securing sensitive 
+data.
+The paper is structured as follows: Sect.  "RELATED WORKS " provides a compre -
+hensive review of prior research and studies related to the topic, highlighting existing 
+approaches and identifying gaps that the current work addresses. Sect. "BACKGROUND 
+KNOWLEDGE" lays the groundwork for the study by explaining the underlying con -
+cepts, theories, or technologies essential for understanding the proposed approach. 
+Sect. "PROPOSED SYSTEM" outlines the methodology, detailing the techniques, pro -
+cesses, and frameworks used to achieve the study’s objectives. Sect. "SECURITY ANAL-
+YSIS" evaluates the robustness and effectiveness of the proposed method through a 
+security analysis, examining vulnerabilities and demonstrating resilience against poten -
+tial threats. Finally, Sect.  "EXPERMENTATION AND RESULTS " concludes the paper 
+by summarizing the key findings, contributions, final section discusses the conclusion, 
+limitations and suggesting directions for future research.
+Related works
+Improving the precision of health data predictions while safeguarding privacy through 
+Homomorphic Encryption (HE) (Paul [11], Scheibner [15]) and Machine Learning (ML) 
+integrates established ML methodologies and offers practical and scholarly advantages. 
+Numerous studies introduced innovative methods to address the dual challenges of data 
+precision and confidentiality. Chandramohan, D, et al. [5] proposed a hybrid authentica-
+tion technique to enhance privacy preservation in cloud storage, ensuring access only to 
+authorized users while mitigating attacks. Their approach demonstrated improved util -
+ity and security for sensitive user data in vulnerable cloud environments.
+Huang et  al. [7] implemented a federated learning strategy by training models on 
+decentralized electronic medical records (EMRs) from multiple hospitals. This approach 
+
+===== PAGE 4 =====
+Page 4 of 27Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+ensures accurate predictions by utilizing diverse datasets, without requiring data shar -
+ing, thereby bolstering data privacy. The efficacy of federated learning in healthcare 
+underscores its potential to uphold data accuracy, while mitigating privacy concerns. 
+This research provides a foundational framework for future inquiries into decentralized 
+ML models. Similarly, Kim et al. [25], Abadi M [3], Abadi M [4] combined differential 
+privacy and homomorphic encryption in logistic regression to achieve secure and effi -
+cient model building, thereby demonstrating a dual-layered ML data security approach.
+Fan et al. [8] introduced algorithms to facilitate the analysis of large-scale health data 
+while upholding stringent privacy and security standards. Their contributions have sig -
+nificantly advanced privacy-preserving techniques for big data, laying a solid foundation 
+for future improvements in algorithmic efficiency and privacy protection. Boura et  al. 
+[9] proposed a hybrid solution that integrates TFHE, B/FV, and HEAAN schemes within 
+Fully Homomorphic Encryption (FHE) to enhance data privacy and ensure secure data 
+processing. This approach effectively combines multiple HE schemes by leveraging their 
+respective strengths, while addressing individual limitations.
+Guo et  al. [12] developed a mutual privacy-preserving k-means strategy based on 
+homomorphic encryption, safeguarding participant privacy and cluster center data. 
+Their study demonstrated the application of HE to clustering algorithms, offering 
+insights into the preservation of privacy in unsupervised learning tasks. Wood et al. [13] 
+provided a comprehensive overview of Fully Homomorphic Encryption (FHE) and its 
+applications in medicine and bioinformatics, informing practitioners about state-of-the-
+art HE techniques. Their critical review identified research gaps and opportunities for 
+applying FHE to medical and bioinformatic data.
+Li et al. [18] introduced a novel homomorphic encryption framework over non-abe -
+lian rings, achieving one-way security based on the Conjugacy Search Problem. Their 
+work contributes to new theoretical foundations for HE by expanding secure encryption 
+methods in computational mathematics. Carpov et al. [21], Ghavamipour [22] advanced 
+the practical application of HE in logistic regression by employing semi-parallel train -
+ing using the BFV cryptosystem and FHE on encrypted data. Ren et al. [10] presented a 
+secure homomorphic encryption scheme for data operations in Internet of Things (IoT) 
+systems, ensuring critical data privacy. Their study explored the intersection of IoT and 
+HE, paving the way for secure data processing in increasingly connected environments. 
+Chen et  al. [6] utilized bibliometric analyses to uncover trends in machine learning 
+research within higher education, providing insights into prevalent research themes and 
+collaborations.
+Wei et al. [24] proposed a privacy-preserving two-party logistic regression algorithm 
+for vertically partitioned data, using asynchronous gradient sharing to enhance secure 
+collaborative learning. Their research highlights the potential of asynchronous methods 
+in privacy-preserving ML, thereby contributing to more efficient collaborative learning 
+frameworks. Sarkar et  al. [14] explored privacy-preserving genotype imputation using 
+machine learning and Paillier cryptosystem-based homomorphic encryption, demon -
+strating HE versatility in secure genetic data analysis.
+Despite the promise of homomorphic encryption (HE) in healthcare, its application 
+in practical machine learning (ML) tasks, particularly in logistic regression models, 
+remains limited. Traditional privacy-preserving ML techniques such as anonymization, 
+
+===== PAGE 5 =====
+Page 5 of 27
+Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+ 
+perturbation, randomization, and condensation often result in information loss and 
+reduced data utility. Combining HE with logistic regression allows privacy-preserving 
+computations without sacrificing data utility or accuracy.
+Aono et al. [28] discussed scalable and secure logistic regression using homomorphic 
+encryption, focusing on the efficiency and practicality of the approach. Reviewing the 
+methodology, optimization, and performance benchmarks is crucial. Chen et  al. [29] 
+explored logistic regression over encrypted data using fully homomorphic encryp -
+tion, with applications in medical genomics. Key aspects to review include encryption 
+schemes, handling large datasets, and real-world scenarios.
+The proposed framework integrates CKKS-based HE with logistic regression to pre -
+dict medical outcomes, while preserving patient privacy. This approach addresses the 
+gaps identified in the existing methods by ensuring data utility without compromising 
+privacy. The framework is adaptable to other ML techniques, such as Support Vec -
+tor Machines (SVM), deep learning, and gradient boosting, offering a foundation for 
+comprehensive evaluations across diverse datasets. By leveraging the strengths of the 
+CKKS-based HE, the proposed method enhances the security and efficiency of privacy-
+preserving computations. This integration not only maintains the accuracy of health 
+data predictions but also ensures robust privacy protection, making it a valuable contri -
+bution to the field of secure and efficient machine learning in healthcare.
+Background knowledge
+This section presents symbols.
+Notations
+Table 1 lists the symbols and their descriptions used in the subsequent sections.
+Table 1 List of symbols and notations used in this study
+Symbol Description
+ϕ( M) Mth cyclomatic polynomial ϕM(X)
+N Degree of cyclomatic polynomial ϕ M(X)
+R Ring of the polynomial defined for plaintext space
+Rq Residue ring of the polynomial defined for ciphertext space
+H Subspace of CN
+γ Canonical embedding
+π: Mapping function, which projects a vector from a sunspace CN to CN/2
+P No of Records
+D No of features
+W Encrypted weight vector
+σ Sigmoid function
+α Learning rate
+/Delta1 Scaling factor
+(c1, c2) Ciphertext
+z Medical record
+Tar Classification Result
+m Encoded medical record
+E, D Encryption and Decryption
+PRk , PUk User k’s Private and public keys
+
+===== PAGE 6 =====
+Page 6 of 27Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+Logistic regression
+Logistic regression is a statistical technique used to predict the likelihood of a binary 
+outcome based on one or more explanatory variables. This method is frequently used 
+in classification problems, where the objective is to estimate the probability of an 
+instance belonging to a specific group.
+The core principle of logistic regression involves examining the relationship 
+between independent variables (also known as predictors or features) and the prob -
+ability of an outcome falling into a particular category. Unlike linear regression, which 
+forecasts continuous outcomes, logistic regression uses a logistic function to model 
+the probability of binary results. The mathematical representation of the logistic 
+regression model can be expressed
+where:
+• P (Y = 1|X) is the probability that the outcome variable Y equals 1, given the input 
+feature X.
+• e is the base natural logarithm.
+• β1, β 2, β 3,.βn are the coefficients (parameters) associated with each independent 
+variable  X1, X2, X3,….., Xn respectively.
+• X1, X2, X3,…., Xn are independent variables.
+The logistic function, known as the sigmoid function, transforms a linear combi -
+nation of independent variables and coefficients into a value between 0 and 1. This 
+ensures that the logistic regression output is a probability representing the likelihood 
+of the observation belonging to the positive class (often coded as 1).
+During training, the logistic regression model learns the optimal values for the coef -
+ficients by maximizing the likelihood of observing the actual outcome given the input 
+features. This process is typically achieved using optimization algorithms, such as 
+maximum likelihood estimation or gradient descent.
+Once the model is trained, it can predict the probability of an observation belong -
+ing to a positive class based on its features. A common approach is to set a threshold 
+(e.g., 0.5) such that observations with predicted probabilities above the threshold are 
+classified as belonging to the positive class. By contrast, those below the threshold 
+belong to the negative class.
+Cheon‑Kim‑Kim‑Song
+CKKS (Cheon‑Kim‑Kim‑Song) homomorphic encryption scheme
+The CKKS (Cheon-Kim-Kim-Song) encryption scheme, introduced in 2016 by Kim, 
+Cheon, Kim, and Song, is a ground breaking framework tailored for homomorphic 
+encryption. This revolutionary technique enables computations of encrypted data 
+without prior decryption, playing a pivotal role in scenarios such as cloud computing, 
+where safeguarding data privacy throughout computations is paramount.
+(1)P(X) = 1
+1 + e(β 0+β 1 x1+−−−−−−−−−−+β nxn
+
+===== PAGE 7 =====
+Page 7 of 27
+Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+ 
+Homomorphic properties
+CKKS was meticulously designed to support homomorphic addition and multiplica -
+tion operations on encrypted data. This capability facilitates the direct execution of 
+intricate mathematical operations on ciphertexts, ultimately producing results identi -
+cal to those derived from decrypted plaintexts.
+Efficiency
+CKKS is strategically engineered for efficiency in homomorphic encryption, which 
+generally entails higher computational demands than traditional methods. CKKS 
+strives to optimize the performance of real-world applications, ensuring that the 
+computational overhead is manageable.
+Support for approximate arithmetic
+Unlike certain homomorphic encryption schemes that strictly adhere to exact arith -
+metic, CKKS proficiently handles approximate arithmetic. This flexibility is invaluable 
+in applications, such as machine learning, where absolute precision in computations 
+may not be imperative.
+Components of CKKS
+Parameter generation
+CKKS requires the generation of specific parameters tailored to the security require -
+ments and desired computational precision. These parameters intricately define 
+the encryption scheme and the permissible range of achievable computations. Key 
+parameters include:
+- The polynomial modulus degree (n) defines the degree of the polynomial ring used.
+- Coefficient modulus ( q) a large integer modulus determining the noise budget.
+- Scaling factor ( /Delta1) a constant that scales plaintext values to ensure precision.
+Key generation
+The CKKS involves the generation of both public and private keys.
+- Public key ( pk ) is used to encrypt data.
+- Private key ( sk ) is used to decrypt data.
+- Evaluation key ( evk ): Facilitates homomorphic operations on ciphertexts.
+Encryption
+The encryption process in CKKS involves encoding the plaintext into a polynomial 
+representation that is conducive to homomorphic operations. This process includes:
+ i. Encoding Converting a plaintext message into a polynomial in the ring 
+Z[x]/(xn + 1).
+
+===== PAGE 8 =====
+Page 8 of 27Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+ ii. Scaling The polynomial is multiplied by a scaling factor to ensure precision.
+ iii. Encryption Random noise is added, and the public key is used to produce cipher -
+text.
+Mathematically, if m is the plaintext, the ciphertext c is given by:
+where e is the added noise.
+Homomorphic operations:
+CKKS supports robust homomorphic operations, specifically, addition and 
+multiplication.
+Addition: Given two ciphertexts c1 and c2 , their homomorphic addition is:
+Multiplication:
+Given two ciphertexts c1 and c2 , their homomorphic multiplication requires 
+linearization:
+Decryption:
+Upon completing the computations, the ciphertext can be decrypted using the private 
+key to reveal the result in its original plaintext form.
+ i. Decryption A private key is used to convert the ciphertext back into a scaled poly -
+nomial.
+ ii. Decoding The polynomial is scaled down and mapped back to the original plaintext 
+space.
+Mathematically, if c is the ciphertext, the plaintext m′ is:
+Comparison of CKKS with other Schemes:
+Feature CKKS BGV
+Number Type Real/Floating-point (approx.) Integer/Fixed-point (exact)
+Noise Handling Tolerates small approximations Exact computation with noise mgmt
+Scaling Rescaling Modulus switching
+Efficiency Faster for real numbers Slower, precise for integers
+Use Case ML, AI, signal processing Cryptography, exact arithmetic
+(2)C = Enc(m) = ([� ·m] + e)modq
+(3)Csum = c1 + c2
+(4)Cprod = Relin(c1 ·c2)
+(5)m′ = Dec(c)
+�
+
+===== PAGE 9 =====
+Page 9 of 27
+Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+ 
+Proposed system
+System architecture
+The top-level architecture of privacy-preserving heart disease prediction using a logistic 
+regression approach on an encrypted dataset is shown in Fig.  1, which comprises three 
+main roles: patient (p), hospital (h), and Cloud Service Provider (CSP). The CSP provides 
+remote data storage and computing services for authentic and curious users. Users have 
+vast amounts of health information and use CSP services. The responsibilities of an indi-
+vidual member in the proposed arrangement are as follows.
+1. Patient He/she is the owner of sensitive data; the patient performs the following 
+operations
+• Health Data encryption Initially, the user chooses his/her health information to 
+be sent to the hospital for disease prediction, which is considered a test dataset. 
+Then, he/she encrypts his/her sensitive medical data using the hospital public key 
+and sends cipher medical records to the hospital for disease prediction.
+• Decryption of predicted value After receiving the predicted value from the hospital 
+in cipher form, use the patient’s private key to decrypt it and learn about the pres-
+ence of the disease.
+2. Hospital Owners of the training dataset, which consists of patients’ medical records 
+from hospital visits. Hospitals generally maintain medical data after receiving 
+approval from patients coming to the hospital for treatment. The doctors are respon-
+sible for the following operations:
+• Encryption of Training model parameters and training dataset Doctors use the 
+hospital public key to encrypt the training dataset and model parameters, and 
+send the resultant ciphertext to the cloud, which is used for model building.
+• Updated training dataset New medical records are inserted into the existing train-
+ing dataset after obtaining permission from the patient.
+• Decryption of predicted result After receiving the predicted value from the cloud 
+in cipher form, use their private key to decrypt and determine the presence of dis-
+ease.
+Fig. 1 Top-Level Architecture
+
+===== PAGE 10 =====
+Page 10 of 27Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+3. CSP , also known as a cloud server, has the following responsibilities of SP include:
+• A gradient-based logistic regression classification model was built for the 
+encrypted training set.
+• The updated weight is sent to the hospital.
+• The test datasets are classified using trained models and the predicted results are 
+returned to the hospital.
+Proposed model
+The proposed scheme is based on CKKS Fully Homomorphic Encryption and Logistic 
+Regression over encrypted data. It offers an efficient methodology to support privacy 
+at all levels, including the input, output, and model privacy. Whenever a patient visits 
+a hospital based on hospital requirements, a patient securely shares his/her health 
+information by encrypting health records using the hospital’s public key, which is con -
+sidered a test dataset for heart disease prediction. The hospital uses CSP services to 
+confirm whether the patient has heart disease. Initially, the hospital shares the train -
+ing dataset and model parameters with the CSP in an encrypted form. CSP uses both 
+the training dataset and model parameters to train the model. A gradient-based logis -
+tic regression technique is used in the proposed method. While training the model, 
+the CSP updates the weight vector accordingly to reduce loss or achieve more accu -
+racy. The CSP shares the updated weight with the hospital. Subsequently, the hospital 
+shares the test dataset with the CSP . The CSP uses the existing trained model against 
+the test dataset and then returns the target value to the hospital in cipher form. Later, 
+the hospital decrypts the received prediction results using their private keys. Subse -
+quently, the hospital communicates it to the patient in cipher form by encrypting the 
+target value using the patient’s public key. Finally, the patient uses their private key 
+to decrypt and knows about his health status of does he has a heart problem or not. 
+Figure  2 shows the detailed architecture of the proposed technique, which consists 
+mainly of four algorithms: key generation and CKKS-FHE. Encryption, CKKS-FHE 
+Decryption, and heart disease prediction using logistic regression of Encrypted Data.
+Fig. 2 Block Diagram of the proposed model
+
+===== PAGE 11 =====
+Page 11 of 27
+Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+ 
+Key concepts and polynomials in CKKS
+i. Polynomial Ring R and Cyclotomic Polynomial:
+- Let N be the degree of the polynomial, chosen as a power of 2.
+- Define M = 2N , and the cyclotomic polynomial ϕ M (X) = XN+1.
+- The polynomial ring R is defined as Z[X]/φM(X) , which means that polynomials in 
+this ring are considered modulo XN + 1.
+- The quotient ring Rq is Zq[X]/(XN + 1) , where operations are performed modulo 
+both q (a large prime) and XN + 1.
+ii. Canonical Embedding Function γ and Mapping π:
+- The canonical embedding function γ maps elements from R to a subset of a higher-
+dimensional space H.
+- The mapping π :H → CN/2 transforms elements from the higher-dimensional space 
+H to the complex vector space CN/2.
+iii. Message Polynomial and Encoding.
+- A message z in CKKS is initially represented as a vector in CN/2.
+- T o encode this message into a polynomial format suitable for encryption, the following 
+steps are performed:
+- The message vector z ∈ CN/2 is first expanded to H by applying π−1(z).—It is then 
+multiplied by a scaling factor /Delta1 and rounded to the nearest integer to form r.
+- The polynomial m is obtained by applying γ−1(r) , resulting in the message in polyno-
+mial format.
+Let N be the degree of the polynomial, a random number chosen as the power of 2, then 
+M = 2N and ϕ M (X), = XN+1.
+Let R = Z[X]/ϕ M (X) , Rq=R / Rq=Zq [X]/(X N + 1).
+Let γ be a canonical embedding function that maps R to γ(R)⊆ H , and.
+π :H → C
+N
+2 . A detailed description of all four algorithms is provided below.
+Let N be the degree of the polynomial, a random number chosen as the power of 2, then 
+M = 2N and ϕ (M) = XN+1. Let R = Z[X]/ϕ M (X) , Rq=R / Rq=Zq [X]/(XN + 1) . Let γ be 
+a canonical embedding function that maps R to γ ( R)⊆ H, and π :H → C
+N
+2 . A detailed 
+description of all four algorithms is provided below.
+a. Key generation The patient/hospital generates public and private keys during 
+this phase. Any patient who wants to send their medical record to a hospital located 
+remotely securely uses this algorithm to define their key pairs, which encrypts and 
+decrypts the messages to achieve data confidentiality. This function takes polynomial 
+degree (N) as the argument and returns public key ( PU k ) and private key ( PRk ) pairs.
+
+===== PAGE 12 =====
+Page 12 of 27Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+Algorithm 1 Keygen ()
+b. Encryption In this phase, the patient encrypts his medical record to securely 
+send sensitive health information to a cloud server. Initially, the user decides on 
+medical records (treated as a test dataset) and encrypts using his public key to 
+get an encrypted dataset. The detailed algorithm for CKKS-FHE encryption is as 
+follows. It takes medical record ( ‡ ) and PU k as input and returns ( c1, c2 ) as cipher -
+text. The complete encryption process comprises the encoding and encryption 
+processes. In the encoding process of a medical record, ‡ǫCN /2 is converted into 
+a message polynomial; initially, ‡ǫCN /2 is expanded to H by applying π −1(‡) , then 
+multiplied by the scaling factor /Delta1 and later rounded to the nearest integer. After -
+wards, it calculates γ −1 message in polynomial format (m ). Then m is added to 
+PU k to get the ciphertext ( c1, c2 ). Similarly, doctors/researchers use this algorithm 
+to securely transfer the model parameters using the patient’s public key.
+Algorithm 2 CKKS-FHE.Encrypt()
+c. Logistic regression over encrypted data The cloud server initiates this phase 
+immediately after receiving the encrypted patient medical records. After receiv -
+ing the test data,  we used the existing trained model. It formulates a model that 
+can perform both forwarded encrypted and back-propagated data to update 
+weights, and thus train the encrypted logistic regression model on encrypted 
+data. The detailed algorithm is as follows: We have chosen a binary cross entropy 
+loss function with regularization of the weight vector adjusted as Wj ← Wj-
+α 1
+P
+∑P
+i=1 (σ (Fi) − Yi)Fij+0.059 Wj.
+
+===== PAGE 13 =====
+Page 13 of 27
+Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+ 
+Algorithm 3 Logistic_Encrypted_Data()
+Algorithm 4 FHE.add()
+The routines used for FHE.add, FHE.sub, and FHE.prod are as follows.
+Algorithm 5 FHE.sub()
+Algorithm 6 FHE.prod()
+
+===== PAGE 14 =====
+Page 14 of 27Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+ d.d. Decryption After receiving the predicted value from a cloud server in cipher form, 
+a patient uses this algorithm to extract the patient’s health target value, confirming 
+whether he/she has a heart problem. The decryption process primarily comprises 
+of two operations: decryption and decoding. Overall description of the CKKS-FHE. 
+The decryption algorithm is described as follows: This algorithm takes ciphertext 
+and his private key as the input and returns the predicted health status ( ‡). After 
+reception of ( c1, c2) patient multiplies c2 with his private key and then, added to c1 , 
+gets m ≈ c1 + c2.PRk=m + e. Subsequently, canonical embedding on m was applied 
+to obtain s and divided by the scaling factor. Finally, to obtain the message vector ‡ , 
+he projects the s vector using π.
+Algorithm 7 CKKS-FHE.Decryption()
+Security analysis
+This section introduces mathematical frameworks for various privacy-related attacks on 
+logistic regression and suggests homomorphic encryption (HE)-based defenses against 
+these threats. We begin by describing the logistic regression model and examining potential 
+privacy risks with a focus on healthcare data, as shown in Figure 3.
+Logistic regression can be described as follows: In a binary classification task, the goal is 
+to predict a label y for a given input vector x . The model’s parameters determine the likeli-
+hood of the target being either 0 or 1, which is expressed as
+(6)p(tar = 0/1|z, w) = σ( wT z)
+Fig. 3 Attacks on Privacy Preserving Logistic Regression
+
+===== PAGE 15 =====
+Page 15 of 27
+Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+ 
+where σ (z) = 1
+1+expexp(−z) is the sigmoid function, and w is the weight vector learned 
+during training.
+Mathematical model for poisoning attacks on logistic regression
+Consider z as an n × m matrix that represents a training dataset containing n samples, 
+each with m m features. Let tar be a vector of n-dimensions that denotes the binary clas-
+sifications for these samples, where each element is either 0 or 1.
+Assume an attacker has access to the training dataset {(z1, tar1), (z2, tar2), ... , (zn, tarn)} 
+employed to train the logistic regression algorithm. The objective of the adversary is to 
+alter a portion of the training dataset to maximize the loss function of the algorithm, 
+which is defined as
+An attacker can introduce malicious examples {z′m, tar′m} into the training dataset or 
+perturb existing examples {zi, tari} to create new examples {z′i, tar′i} . The altered sam -
+ples are created by introducing a minor modification /Delta1zi to the original input zi , such 
+that:
+The objective of the adversary is to discover a group of modified examples that will 
+lead the model to incorrectly classify specific instances during the evaluation. This chal -
+lenge is expressed as an optimization task.
+where tari′ is the label assigned to the perturbed example z′i.
+HE-Based Solutions to Defend against Poisoning Attacks.
+For logistic regression, the weight vector w is determined by the model through the 
+minimization of the logistic loss function:
+where pi = 1
+1+exp(−zT
+i w) is the predicted probability for the i th data point.
+When training data and labels are encrypted using a fully homomorphic encryption 
+(FHE) system, calculations can be performed on the encrypted information without 
+decrypting it.
+For model training, the gradient of the logistic loss function in w.r.t w  is calculated as:
+(7)L(w) =−
+∑
+i
+tarilog(σ(wTzi)) + (1 − tari)log(1 − σ(wTzi))
+(8)z′i = zi + /Delta1zi
+(9)MaximizeL(w)
+subjecttotar′i = tari for a subset of the examples
+(10)L(w) =− 1
+n
+∑
+i
+(tarilog(pi) + (1 − tari)log(1 − pi))
+(11)GradwL(w) = 1
+n
+∑
+i
+((pi − tari)zi)
+
+===== PAGE 16 =====
+Page 16 of 27Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+A fully homomorphic encryption (FHE) system that supports mathematical opera -
+tions such as addition and multiplication enable the calculation of this gradient on 
+encrypted information.
+1. 1. Encrypt the training data matrix z and label vector tar to obtain Enc(z) and 
+Enc(tar).
+2. Initialize the weight vector w randomly and encrypt it to get Enc(w).
+3. For each training iteration:—Compute the predicted probability vector P using 
+encrypted weights and data:
+- Compute the encrypted gradient vector
+- Decrypt the gradient vector to obtain the actual gradient.
+- Update the weight vector w using the decrypted gradient.
+- Encrypt the updated weight vector.
+After the training is finished, the encrypted weight vector Enc(w) can be decrypted 
+to obtain the trained logistic regression model. By using encrypted data through -
+out all calculations, including the weights, any unauthorized changes to either the 
+training data or the weights are prevented without access to the decryption key. This 
+method effectively protects against poisoning attacks.
+Mathematical model for evasion attacks on logistic regression
+During an evasion attack, malicious actors manipulate input data to deceive a 
+model’s predictions while maintaining an appearance of legitimacy. This sce -
+nario assumes the attacker can access both the trained model and the test data -
+set{(z ′test1, tar′test1), ... , (z′testm, tar′testm)} .. The primary objective of an attacker is to 
+modify the input vectors within the test dataset to cause the model to make incor -
+rect predictions.
+The attacker modifies an input vector z′i by adding a perturbation /Delta1zi:
+The perturbation /Delta1zi is chosen to minimize the distance between zi and z′i while 
+ensuring the model misclassifies the input. This is formulated as:
+where f (z′i) is the predicted label for z′i . The objective is to minimize perturbation while 
+ensuring misclassification.
+(12)Enc(P) = 1
+1 + exp(−Enc(zT ) × Enc(w))
+(13)Enc(GradwL(w)) = 1
+n
+∑
+((Enc(P) − Enc(tar)) × Enc(z))
+z′i = zi + /Delta1zi
+(14)minimize||�zi||subjecttof (z′i) �= tari
+
+===== PAGE 17 =====
+Page 17 of 27
+Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+ 
+He‑Based solution to defend against evasion attacks
+It is essential to demonstrate that performing homomorphic operations on encrypted 
+data does not compromise the accuracy of the logistic regression model. The 
+decrypted output should remain precise even if an adversary tampers with encrypted 
+input data.
+Suppose an attacker modifies the encrypted input vector Enc(z) by adding a pertur -
+bation Enc(p):
+The attacker aims to change the decrypted output tarnew by carefully choos -
+ing Enc(p) . Assume the perturbation vector is bounded by ||Enc(p)|| ≤ε , where ε is 
+small. In evasion attacks, this assumption restricts the alterations that an attacker can 
+implement.
+The original logistic regression output tar is:
+The modified output tarnew is:
+We extend the equation by applying the dot product’s linear property and leverag -
+ing the characteristics of the sigmoid function tarnew as:
+Bounding the absolute difference between tar and tarnew:
+Given the bounds of the sigmoid function between 0 and 1:
+With ||Enc(p)|| ≤ε:
+This demonstrates that the absolute variance between the decrypted outputs tar 
+and  tarnew is limited by a small quantity determined by the norm of the weight vector 
+and maximum absolute derivative value of the sigmoid function. By carefully choos -
+ing these parameters and ensuring that the perturbation vector remains sufficiently 
+small, we can maintain the accuracy of the logistic regression model, even when faced 
+with evasion attacks.
+Adversarial examples and model vulnerability
+Creating adversarial examples that can deceive machine learning models is achiev -
+able. Scientists have developed numerous techniques to generate these subtle 
+(15)Enc(znew) = Enc(z) + Enc(p)
+(16)tar = σ( wT z + b)
+(17)tarnew = σ( wT (z + p) + b)
+(18)tarnew = σ( wT z + b) + wT p × σ ′(wT z + b) × (1 − σ( wT z + b))
+(19)|tarnew − tar|=|wT p × σ ′(wT z + b) × (1 − σ( wT z + b))|
+(20)|tarnew − tar| ≤ ||w|| × ||Enc(p)|| × ||σ′||∞
+(21)|tarnew − tar| ≤ ||w|| ×ε × ||σ′||∞
+
+===== PAGE 18 =====
+Page 18 of 27Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+alterations, which are typically unnoticeable to the human eye but can cause signifi -
+cant errors in model predictions. The complexity of producing effective adversarial 
+examples is affected by multiple variables.
+1. Model Complexity Consider a machine learning model M . Sophisticated models 
+featuring intricate structures or high levels of nonlinearity may exhibit a greater 
+resistance to simple disturbances. However, these models are still susceptible to 
+sophisticated attacks, particularly those that utilize higher-order derivatives of the 
+input-related loss function.
+2. Model Type Different models, such as neural networks ( N ) or decision trees ( T ), 
+exhibit varying levels of susceptibility to adversarial attacks. For instance, neural net -
+works are often more vulnerable to gradient-based attacks, such as the Fast Gradient 
+Sign Method (FGSM) given by
+where x is the original input, J (θ , x, y) is the loss function, θ are the model param -
+eters, and y is the true label.
+3. Input Data The vulnerability also depends on the nature of the input data x ∈ Rd . 
+For certain datasets, small perturbations can significantly alter the decision bound -
+ary, rendering the data more susceptible to adversarial attacks.
+4. Attack Knowledge The effectiveness of an adversarial attack often depends on the 
+attacker’s knowledge of the model, denoted as K (M) . For white-box attacks, in which 
+the attacker has full knowledge of the model architecture and parameters, generating 
+effective adversarial examples is generally easier.
+Mathematical model for membership inference attacks on logistic regression In a mem-
+bership inference attack, an attacker aims to determine whether a specific individual was 
+part of the training dataset D ={ (zi, yi)}n
+i=1  used to train a logistic regression model.
+Let MLR denote the trained logistic regression model, which outputs the probabil -
+ity p(y = 1|z;w) = σ( wT z) , where σ( z) = 1
+1+e−z  is the sigmoid function, and w is the 
+weight vector.
+Assume an attacker has access to the model and a set of queries Q ={ z1′, z2′, ... , zm′} , 
+where each zi′ represents an individual’s information. The attacker’s goal is to determine 
+whether a specific data point zi′ was used in training.
+T o defend against such attacks using homomorphic encryption (HE), the training 
+data D and the weight vector w can be encrypted using Fully Homomorphic Encryption 
+(FHE). The encrypted gradient descent update rule is given by:
+where α is the learning rate, Z is the input matrix, and y and y′ are the true and predicted 
+labels, respectively.
+After a fixed number of iterations, we obtain the final encrypted weight vector 
+Enc(w∗) , which is used to predict output values for new encrypted test data. The predic -
+tion for a new input ztest is:
+(22)x′ = x + ε ·sign(∇ xJ (θ, x, y)),
+(23)Enc(w′) = Enc(w) − α ·Enc(ZT ) ·(Enc(y)− Enc(y′)),
+
+===== PAGE 19 =====
+Page 19 of 27
+Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+ 
+Decryption of the predicted output is performed as:
+This ensures that an attacker cannot infer membership because all computations are per-
+formed on the encrypted data. However, FHE can be computationally expensive, which 
+makes it essential to balance privacy and performance.
+Mathematical model for model inversion attacks on logistic regression In a model inversion 
+attack, the attacker attempts to reconstruct the training data D from the logistic regression 
+model MLR.
+Consider a binary classification problem where the model is trained on a dataset 
+D ={ (zi, yi)}n
+i=1  . Given access to the model and its predictions {z1′, z2′, ... , zm′} , the 
+attacker computes the partial derivative of the model’s output with respect to each input 
+feature:
+The attacker can then solve the following optimization problem to reconstruct the origi-
+nal input zi:
+T o defend against this, homomorphic encryption can be used to encrypt the weight vec-
+tor w , so that:
+and noise can be added to the predicted probability:
+where η is a random noise term. This makes it difficult for the attacker to accurately 
+reconstruct the input data.
+Mathematical model for model extraction attacks on logistic regression In a model extrac-
+tion attack, the attacker aims to replicate a trained logistic regression model MLR without 
+access to the original training data D.
+Assume the model is trained on D ={ (zi, yi)}n
+i=1  , and the attacker has access to the model 
+and a set of input–output pairs {(z1′, y1′), (z2′, y2′), ... , (zm′, ym′)} generated by querying the 
+model. The attacker attempts to solve the following optimization problem to extract the 
+weight vector w:
+where w′ is the extracted weight vector.
+(24)Enc(ˆy) = σ( Enc(zT
+test ) ·Enc(w∗)).
+ˆy = Dec(Enc(ˆy))
+(25)
+∂ p(y = 1|z, w)
+∂ zj
+= σ( wT z) ·(1 − σ( wT z)) ·wj
+(26)min
+zi′
+� zi − zi′�2 subjectto p(y = 1|zi, w) = p(y = 1|zi′, w)
+Enc(p) = σ( Enc(zT ) ·Enc(w)),
+Enc(pnoisy) = Enc(p) + Enc(η),
+(27)min
+w′
+� w − w′�2 subjectto p(y = 1|z′, w′) = y′,
+
+===== PAGE 20 =====
+Page 20 of 27Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+To defend against this, homomorphic encryption can be applied to encrypt the model 
+parameters.
+Because the attacker cannot decrypt the model parameters or encrypted output pre -
+dictions without the decryption key, the optimization problem becomes infeasible.
+In conclusion, homomorphic encryption offers strong protection against various 
+attacks on logistic regression models, including membership inference, model inversion, 
+and model extraction. However, this approach results in a substantial increase in compu-
+tational costs. When implementing these methods, it is crucial to strike a balance among 
+privacy protection, security measures, and practical computational requirements.
+Experimentation and results
+To develop the CKKS encryption and decryption scheme, the proposed technique was 
+implemented using the PyTorch and TenSEAL libraries on Google Colab. Table  2 lists 
+the parameters used in the CKKS. The key pair required for dot product operations was 
+generated using the ctx_eval.generate_galois_keys() method. A logistic regression model 
+was built using Gradient Descent with a learning rate of 1 and a binary cross-entropy 
+loss function. The number of epochs varied between 5, 10, 20, and 50, with updates to 
+the weight vector accordingly.
+In this study, we analyzed the performance of two algorithms: logistic regression with -
+out data encryption and a logistic regression (LR) model on encrypted data using homo -
+morphic encryption with a polynomial modulus of degrees 4096 and 8192 for heart 
+disease prediction. The Heart dataset (https:// www. kaggle. com/ datas ets/ johns mith88/ 
+(28)Enc(y) = σ( Enc(wT ) ·Enc(z)).
+(29)min
+w′
+� Enc(y) − Enc(σ (w′T z))�2,
+Table 2 CKKS Homomorphic parameters
+poly_modulus_degree 4096 8192
+coeff_mod_bit sizes [40, 20, 40] [40, 21, 21, 21, 
+21, 21, 21, 40]
+ctx_training.global_scale 2 20 2 21
+Table 3 User Computation time
+* KG Key pair Generation, ETDS Encrypt Test DataSet, DCR Decryption of Classification Result, ETDS Encrypt Training DataSet, 
+ECR Encryption of Classification Result, HELR Homomorphic Logistic Regression
+Function Mathematical Operations
+Patient KG, ETDS, DCR KG: 1Padd,1Psub,1Pmul
+ETDS: D*(2Inv,2Pmul,1Psub,1Padd)
+DCE: 4Pmul,1Inv,1Map,1Padd
+Hospital KG, ETRDS, DCR, ECR KG: 1Padd,1Psub,1PMul
+ETRDS: P*D*(2Inv,2Pmul,1Psub,1Padd)
+DCR:4Pmul,1Inv,1Map,1Padd
+ECR:2Inv,2PMul,1Psub,1Padd
+Server HELR, ECR HELR:
+ECR: 2Inv,2PMul,1Psub,1Padd
+
+===== PAGE 21 =====
+Page 21 of 27
+Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+ 
+heart- disea se- datas et) [27] was used for the analysis. The parameters used in our pro -
+posed method are presented in Table 2, and their performances were compared in terms 
+of the overall computation time. Table  3 shows the total number of patients, hospitals, 
+and CSP operations performed. Only the computation time for the different operations, 
+excluding the communication cost, was considered. The proposed method requires the 
+patient to perform key generation (KG), medical record encryption (ETDS), and decryp -
+tion of classification results (DCE). The user assumes three polynomials: one polynomial 
+addition (Padd), one polynomial subtraction (Psub), and one polynomial multiplication 
+(PMul) to generate the key pair. The detailed mathematical operations for encryption 
+and decryption are shown in the same table, where the inverse and mapping operations 
+are represented as Inv and map, respectively. Figure 4 illustrates the overall computation 
+time, indicating that logistic regression on plain data requires milliseconds to complete 
+the prediction, whereas logistic regression on encrypted data takes longer. Furthermore, 
+the computation time increases with the degree.
+Figure 5 shows a comparative analysis of the computation time to perform the train -
+ing dataset and testing dataset encryption time using modulus polynomials 4096 and 
+Fig. 4 Overall computation Time
+Fig. 5 Training and Testing Dataset Encryption Time
+
+===== PAGE 22 =====
+Page 22 of 27Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+8192. It was observed that 8192 required more computation time than 4096. The perfor-
+mances of both techniques were compared by changing the number of epochs to 5, 10, 
+20, and 50. HELR_4096 has taken 1061, 1093, 1301, and 1731 ms to encrypt the training 
+dataset, whereas HELR_8192 has taken 4550,5242, 5542, and 12225 ms. In addition, we 
+can observe that with an increase in epoch values, the computation time also increases. 
+Similarly, HELR_4096 took 219, 220, 222, and 229 ms to encrypt the test dataset, and 
+HELR_8192 took 1013,1019, 1033, and 1059 ms, respectively.
+Figure 6 shows the accuracy analysis of Logistic Regression (LR) and Logistic Regres -
+sion using Homomorphic Encryption (LR_HE) using modulus polynomials 4096 and 
+8192. The accuracy was analyzed for 5, 10, 20, and 50 epochs. It was observed that accu -
+racies of 85%, 84%, and 84% were achieved in LR, HELR_4096, and HELR_8192, respec -
+tively. From the accuracy graphs, the accuracies of LR_HELR_4096 and HELR_8192 are 
+approximately equal to that of LR, with a deviation of approximately 1%. In addition, we 
+observed that the performance remained the same irrespective of the change in epoch 
+count for all three techniques.
+The area under the ROC curve (receiver operating characteristic curve) indicates the 
+performance of the classifier. The ROC curve was constructed by plotting the (FPR and 
+TPR) pairs for each possible threshold value. The values of TPR and FPR were computed 
+by varying the threshold values of 0.2, 0.4, 0.6, and 0.8. The ROC was constructed by 
+plotting (FPR, TPR) for all threshold values, and observed that at 0.8 thresholds, clas -
+sifiers performance was better. Figure  7 shows the ROC curves for HELR_4096 and 
+HELR_8192 at a threshold of 0.8, with an optimal AUC. From the figure, it can be 
+Fig. 6 LR Vs HELR Accuracy
+Fig. 7 HELR ROC Curve
+
+===== PAGE 23 =====
+Page 23 of 27
+Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+ 
+Table 4 Comparison of the proposed method with existing framework
+Author Objective Dataset Model Advantages Limitations
+X. Zhao et al., 2022 secure multi-party computation 
+protocol
+COVID-19 negative 
+X-ray image dataset 
+samples
+BFV homomorphic encryption. 
+Deep Learning
+Efficient for Integer Arithmetic 
+operations. Good performance for 
+operations involving integers
+Less Flexibility for Real-World Applica-
+tions. Less Efficient for Approximate 
+Arithmetic
+[24] vertically partitioning dataset by 
+asynchronous gradient sharing
+MNIST Dataset CKKS algorithm. Logistic regression Efficient for Small Datasets Strong 
+security guarantees against various 
+cryptographic attacks
+Struggle to handle the high dimen-
+sionality of image data efficiently. 
+High computational overhead
+proposed Patient centric data privacy through 
+CKKS technique
+Heart Disease Dataset CKKS algorithm. Logistic regression Strong security guarantees against 
+various cryptographic attacks Effi-
+cient for Small Datasets. Compatibil-
+ity with Real-World Applications
+Scalability of logistic regression with 
+HE for large healthcare datasets
+
+===== PAGE 24 =====
+Page 24 of 27Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+observed that with a higher AUC value, the performance of HELR_4096 is better than 
+that of HELR_8192. Comparisons of the proposed method with existing frameworks are 
+presented in Table 4.
+The Fig.  8 compares the performance of two methods, HELR and HESVM, across 
+three datasets (heart, statlog (https:// www. kaggle. com/ datas  ets/ shuba msumb ria/ statl 
+og- heart- data- set) [36]  and (https:// www. kaggle. com/ datas ets/ shuba msumb ria/ statl og- 
+heart- data- set) ,and Framingham(https:// www. kaggle. com/ datas ets/ aashe esh200/ frami 
+ngham- heart- study- datas et)) [35] under two parameter configurations (4098 and 8192). 
+For the heart dataset, HELR consistently outperforms HESVM, achieving a score of 81.7 
+with the 4098 configuration and improving to 85 with the 8192 configuration, compared 
+to HESVM’s scores of 67 and 79, respectively. Similarly, for the statlog dataset, HELR 
+achieves perfect scores of 100 under both configurations, while HESVM shows improve-
+ment from 69 with the 4098 configuration to 88 with the 8192 configuration but still falls 
+short of HELR’s performance. In contrast, the results for the framingham dataset are 
+mixed. With the 4098 configuration, HESVM slightly outperforms HELR (scores of 63 
+vs. 62), but HELR takes the lead with the 8192 configuration, achieving 65 compared to 
+HESVM’s 61.
+Overall, HELR demonstrates superior performance across most datasets and configu -
+rations, particularly excelling in the statlog dataset where it achieves perfect scores. Both 
+methods generally show improved performance with the 8192 configurations, indicat -
+ing the potential benefit of higher parameter settings. However, HESVM’s performance 
+remains consistently below HELR for the heart and statlog datasets, while the results 
+for framingham suggest a more competitive but still slightly weaker performance by 
+HESVM.
+Comparative analysis
+The proposed scheme was evaluated against two existing schemes that utilize Homo -
+morphic Encryption (HE) with Logistic Regression (LR), despite their different intended 
+purposes and methodological variations. Table  4 presents a comparison. In 2022, X. 
+Zhao et  al. introduced a privacy-preserving federated learning system for medical 
+data using homomorphic encryption. Their approach uses a secure multiparty com -
+putation protocol to protect the deep learning model from potential threats. The BFV 
+Fig. 8 Performance analysis of Logistic Regression vs SVM on three datasets (heart, statlog, and Framingham)
+
+===== PAGE 25 =====
+Page 25 of 27
+Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+ 
+homomorphic encryption technique used in this method is primarily suited to integer 
+operations, which is a limitation.
+[24] addressed the pressing need for efficient and secure multi-party training using 
+vertically partitioned datasets. They focused on developing efficient training methods 
+for logistic regression models. Their protocol employed logistic regression modelling of 
+vertically partitioned data through asynchronous gradient sharing. The authors empha -
+sized the vertical partitioning of the training data, encrypting it using the CKKS algo -
+rithm, and applying logistic regression for model training. However, their study utilized 
+an image dataset to predict COVID-19 negative X-ray image dataset samples.
+Our study focused on a heart disease dataset by employing the CKKS technique to 
+enhance privacy protection. CKKS, an encryption method primarily utilized in homo -
+morphic encryption, enables computations of encrypted information without prior 
+decryption. This scheme offers numerous benefits, including versatility with respect 
+to data types, support for arbitrary precision, and interoperability. As a result, CKKS 
+is well suited for a diverse datasets and range of practical applications that require 
+secure computations on encrypted data.
+Results and interpretation
+1. Computation Time Encryption time increased with higher polynomial sizes and 
+epoch counts. The HELR model using 4096 was computationally more efficient than 
+8192, making it suitable for resource-limited environments. However, 8192 offers 
+stronger security, which may justify its higher overhead in critical applications.
+2. Accuracy HELR models achieved an accuracy of 84%, closely matching the baseline 
+Logistic Regression (LR) model’s 85%. This demonstrates that the homomorphic 
+encryption process does not significantly compromise predictive accuracy, maintain-
+ing its utility in privacy-preserving scenarios.
+3. Security ROC analysis revealed that HELR_4096 had a higher AUC than HELR_8192, 
+indicating better performance under certain configurations. This suggests that 
+smaller polynomials may balance security and efficiency effectively in specific con -
+texts.
+4. Comparative Performance Across datasets, HELR consistently outperformed 
+HESVM, particularly in the statlog dataset, where it achieved perfect scores. The 
+results demonstrate HELR’s robustness and suitability for diverse data types and 
+parameter configurations.
+Interpretation
+The findings confirm that the HELR framework offers a practical balance between 
+privacy, computational efficiency, and predictive accuracy. While higher polynomial 
+sizes enhance security, the trade-off in computational time should guide configura -
+tion choices based on application needs. HELR’s superior performance across data -
+sets underscores its potential for secure and effective healthcare predictions.
+
+===== PAGE 26 =====
+Page 26 of 27Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+The results confirm the HELR model’s effectiveness in ensuring privacy while main -
+taining high predictive performance.
+Conclusion and future work
+In this study, we proposed an HE-aware logistic regression model built on encrypted 
+data using CKKS. The proposed method can be used to outsource the training phase 
+of logistic regression to a cloud service in a privacy-preserving manner. We conducted 
+experiments using the Tenseal package on real datasets from Kaggle to evaluate the 
+performance of both the logistic regression (over unencrypted data) and the proposed 
+system. We conducted a security analysis to show that the proposed system can defend 
+against poison, evasion, member inference, model inversion, and model extraction in 
+the respective stages of machine learning. The performance of the proposed system pro-
+vided satisfactory results relative to the model without HE, with a minimal difference 
+in accuracy between 0.01 and 0.03. As a future scope, one can investigate and explore 
+extension HELR framework to multi-class classification problems and propose HE-
+aware multi class healthcare prediction systems.
+Author contributions
+First Author (V S N): Contributed to the design and conceived the original and supervised the project.  Entire drafting of 
+the paper.  Second Author (SR): Contributed to the implementation of the research, and analysis of the results and to the 
+writing of the manuscript.
+Funding
+This research received no external funding.
+Availability of data and materials
+No datasets were generated or analysed during the current study.
+Declarations
+Ethics approval and consent to Participate
+Not applicable’ .
+Competing interests
+The authors declare no competing interests.
+Received: 10 September 2024   Accepted: 11 February 2025
+References
+ 1. Machanavajjhala A, Kifer D, Gehrke J, Venkitasubramaniam M. l-diversity: privacy beyond k-anonymity. ACM Trans 
+Knowl Disc Data (TKDD). 2007;1(1):3.
+ 2. Duchi JC, Jordan MI, Wainwright MJ. Privacy-aware learning. J ACM (JACM). 2013;60(6):41.
+ 3. Abadi, M., Chu, A., Goodfellow, I., McMahan, H. B., Mironov, I., Talwar, K., & Zhang, L. (2016). Deep learning with dif-
+ferential privacy. In Proceedings of the 2016 ACM SIGSAC Conference on Computer and Communications Security 
+(CCS’16) (pp. 308–318).
+ 4. Abadi, M., & Andersen, D. G. (2016). Learning to protect communications with adversarial neural cryptography.
+ 5. Chandramohan, D., Vengattaraman, T., Rajaguru, D., Baskaran, R., &Dhavachelvan, P . (2013). Hybrid authentication 
+technique to preserve user privacy and protection as an end point lock for the cloud service digital information. 
+IEEE.
+ 6. Chen Z, Hu G, Zheng M, Song X, Chen L. Bibliometrics of machine learning research using homomorphic encryp-
+tion. Mathematics. 2021;9(21):2792. https:// doi. org/ 10. 3390/ math9 212792.
+ 7. Huang L, Shea AL, Qian H, Masurkar A, Deng H, Liu D. Patient clustering improves efficiency of federated machine 
+learning to predict mortality and hospital stay time using distributed electronic medical records. J Biomed Inform. 
+2019;99: 103291. https:// doi. org/ 10. 1016/j. jbi. 2019. 103291.
+ 8. Fan Y, Bai J, Lei X, Zhang Y, Zhang B, Li KC, Tan G. Privacy preserving based logistic regression on big data. J Netw 
+Comput Appl. 2020;171: 102769. https:// doi. org/ 10. 1016/j. jnca. 2020. 102769.
+
+===== PAGE 27 =====
+Page 27 of 27
+Naresh and Reddi  Journal of Big Data           (2025) 12:52 
+ 
+ 9. Boura C, Gama N, Georgieva M, Jetchev D. Chimera: Combining ring-lwe-based fully homomorphic encryption 
+schemes. J Mathe Cryptol. 2020;14(1):316–38. https:// doi. org/ 10. 1515/ jmc- 2019- 0026.
+ 10. Ren W, Tong X, Du J, Wang N, Li SC, Min G, Zhao Z, Bashir AK. Privacy-preserving using homomorphic encryption in 
+Mobile IoT systems. Comput Commun. 2021;165:105–11. https:// doi. org/ 10. 1016/j. comcom. 2020. 10. 022.
+ 11. Paul JMS, Annamalai MSMS, Ming W, Badawi AA, Veeravalli B, Aung KMM. Privacy-preserving collective learning with 
+homomorphic encryption. In IEEE Access. 2021;9:132084–96. https:// doi. org/ 10. 1109/ ACCESS. 2021. 31145 81.
+ 12. Guo X, Lin H, Wu Y, Peng M. A new data clustering strategy for enhancing mutual privacy in healthcare IoT systems. 
+Futur Gener Comput Syst. 2020;113:407–17. https:// doi. org/ 10. 1016/j. future. 2020. 07. 023.
+ 13. Wood A, Najarian K, Kahrobaei D. Homomorphic encryption for machine learning in medicine and bioinformatics. 
+ACM Comput Surv. 2021;53(4):1–35. https:// doi. org/ 10. 1145/ 33946 58.
+ 14. Sarkar E, Chielle E, Gürsoy G, Mazonka O, Gerstein M, Maniatakos M. Fast and scalable private genotype imputation 
+using machine learning and partially homomorphic encryption. In IEEE Access. 2021;9:93097–110. https:// doi. org/ 
+10. 1109/ ACCESS. 2021. 30930 05.
+ 15. Scheibner J, Ienca M, Vayena E. Health data privacy through homomorphic encryption and distributed ledger 
+computing: an ethical-legal qualitative expert assessment study. BMC Med Ethics. 2022;23(1):121. https:// doi. org/ 10. 
+1186/ s12910- 022- 00852-2.
+ 16. Salim MM, Kim I, Doniyor U, Lee C, Park JH. Homomorphic encryption based privacy-preservation for IoMT. Appl Sci. 
+2021;11(18):8757. https:// doi. org/ 10. 3390/ app11 188757.
+ 17. Zhang L, Xu J, Vijayakumar P , Sharma PK, Ghosh U. Homomorphic encryption-based privacy-preserving federated 
+learning in iot-enabled healthcare system. IEEE Trans Network Sci Eng. 2022;10(5):2864–80. https:// doi. org/ 10. 1109/ 
+TNSE. 2022. 31853 27.
+ 18. Li J, Kuang X, Lin S, Ma X, Tang Y. Privacy preservation for machine learning training and classification based on 
+homomorphic encryption schemes. Inf Sci. 2020;526:166–79. https:// doi. org/ 10. 1016/j. ins. 2020. 03. 041.
+ 19. Wibowo VVP , Rustam Z, Laeli AR. Logistic regression and logistic regression-genetic algorithm for classification of 
+liver cancer data. New York: IEEE Publications; 2021.
+ 20. Yu X, Zhao W, Huang Y, Ren J, Tang D. Privacy-preserving outsourced logistic regression on encrypted data from 
+homomorphic encryption. Sec Commun Networks. 2022;2022:1–17. https:// doi. org/ 10. 1155/ 2022/ 13211 98.
+ 21. Carpov S, Gama N, Georgieva M, Troncoso-Pastoriza JR. Privacy-preserving semi-parallel logistic regression train-
+ing with fully homomorphic encryption. BMC Med Genomics. 2020;13(Suppl. 7):88. https:// doi. org/ 10. 1186/ 
+s12920- 020- 0723-0.
+ 22. Ghavamipour AR, Turkmen F, Jiang X. Privacy-preserving logistic regression with secret sharing. BMC Med Inform 
+Decis Mak. 2022;22(1):89. https:// doi. org/ 10. 1186/ s12911- 022- 01811-y.
+ 23. Zhou Y, Song L, Liu Y, Vijayakumar P , Gupta BB, Alhalabi W, Alsharif H. A privacy-preserving logistic regression-based 
+diagnosis scheme for digital healthcare. Futur Gener Comput Syst. 2023;144:63–73. https:// doi. org/ 10. 1016/j. future. 
+2023. 02. 022.
+ 24. Wei Q, Li Q, Zhou Z, Ge Z, Zhang Y. Privacy-preserving two-parties logistic regression on vertically partitioned data 
+using asynchronous gradient sharing. Peer-to-Peer Networking Appl. 2021;14(3):1379–87. https:// doi. org/ 10. 1007/ 
+s12083- 020- 01017-x.
+ 25. Kim M, Lee J, Ohno-Machado L, Jiang X. Secure and differentially private logistic regression for horizontally distrib-
+uted data. IEEE Trans Inf Forensics Secur. 2019;15:695–710. https:// doi. org/ 10. 1109/ TIFS. 2019. 29254 96.
+ 26. Divakar Allavarpu VVL, Naresh VS, Krishna Mohan A. Privacy-preserving credit risk analysis based on homomorphic 
+encryption aware logistic regression in the cloud. Security Privacy. 2024. https:// doi. org/ 10. 1002/ spy2. 372.
+ 27. Dataset: https:// www. kaggle. com/ datas ets/ johns mith88/ heart- disea se- datas et
+ 28. Aono, Y., Hayashi, T., Trieu Phong, L., & Wang, L. (2016). Scalable and secure logistic regression via homomorphic 
+encryption. In Proceedings of the sixth ACM conference on data and application security and privacy (pp. 142–144).
+ 29. Chen H, Gilad-Bachrach R, Han K, Huang Z, Jalali A, Laine K, Lauter K. Logistic regression over encrypted data from 
+fully homomorphic encryption. BMC Med Genomics. 2018;11:3–12.
+ 30. Gupta R, Saxena D, Gupta I, Makkar A, Singh AK. Quantum machine learning driven malicious user prediction for 
+cloud network communications. IEEE Networking Lett. 2022;4(4):174–8.
+ 31. Gupta R, Gupta I, Singh AK, Saxena D, Lee CN. An iot-centric data protection method for preserving security and 
+privacy in cloud. IEEE Syst J. 2022;17(2):2445–54.
+ 32. Gupta R, Saxena D, Gupta I, Singh AK. Differential and triphase adaptive learning-based privacy-preserving model 
+for medical data in cloud environment. IEEE Networking Letters. 2022;4(4):217–21.
+ 33. Gupta R, Singh AK. A differential approach for data and classification service-based privacy-preserving machine 
+learning model in cloud environment. New Gen Comput. 2022;40(3):737–64.
+ 34. Singh AK, Gupta R. A privacy-preserving model based on differential approach for sensitive data in cloud environ-
+ment. Multimed Tools Appl. 2022;81(23):33127–50.
+ 35. Dataset: https:// www. kaggle. com/ datas ets/ aashe esh200/ frami ngham- heart- study- datas et
+ 36. Dataset: https:// www. kaggle. com/ datas ets/ shuba msumb ria/ statl og- heart- data- set
+Publisher’s Note
+Springer Nature remains neutral with regard to jurisdictional claims in published maps and institutional affiliations.

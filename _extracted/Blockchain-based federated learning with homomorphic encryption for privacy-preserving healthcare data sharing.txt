@@ -1,0 +1,865 @@
+
+
+===== PAGE 1 =====
+ 
+Contents lists available at ScienceDirect
+Internet of Things
+journal homepage: www.elsevier.com/locate/iot  
+Research article
+Blockchain-based federated learning with homomorphic encryption 
+for privacy-preserving healthcare data sharing
+Muhammad Firdaus a,c,f
+ , Harashta Tatimma Larasati d,e
+ , Kyung Hyune-Rhee b
+ ,∗
+a Industrial Science Technology Research Center, Pukyong National University, Busan, 48513, Republic  of Korea
+b Division of Computer Engineering and AI, Pukyong National University, Busan, 48513, Republic  of Korea
+c School of Computing, Telkom University, Bandung, 40132, Indonesia
+d School of Electrical Engineering and Informatics, Institut Teknologi Bandung, Bandung, 40257, Indonesia
+e Department of Scientific Computing, Pukyong National University, Busan, 48513, Republic  of Korea
+f Department of Intelligence Computing, Dong-Eui University, Busan, 47340, Republic  of Korea
+A R T I C L E  I N F O
+Keywords:
+Healthcare
+Privacy-preserving
+Homomorphic encryption
+Blockchain
+Federated learning
+ A B S T R A C T
+Healthcare data is often fragmented across various institutions due to its highly sensitive 
+and private nature. In this sense, hospitals and clinics maintain electronic health records 
+(EHRs) independently; hence, valuable data is siloed within individual organizations, preventing 
+comprehensive analysis that could benefit from diverse data sources. Federated learning (FL) 
+addresses these challenges by enabling the training of a shared global model using data 
+distributed across multiple institutions without moving the data from its source. By leveraging 
+FL, healthcare institutions can combine their data assets to improve predictive analytics, 
+personalized medicine, and overall healthcare outcomes, ultimately benefiting patients and 
+the healthcare system. However, the current FL model with a central server presents several 
+challenges within healthcare, including the risk of malicious attacks, regulatory compliance, and 
+privacy vulnerabilities. To overcome these issues, this paper introduces the FL framework with 
+blockchain and homomorphic encryption (HE). Our framework aims to minimize the role of the 
+central server, enable collaborative model training across healthcare organizations, and enhance 
+data security and privacy. In this sense, blockchain ensures the integrity and transparency of the 
+process, while homomorphic encryption ensures that the data remains private. This framework 
+can potentially enable institutions to enrich medical knowledge while securely keeping patient 
+data collaboratively and facilitating healthcare analytics in practical settings.
+1. Introduction
+In recent years, the availability of healthcare data from various sources, like clinical institutions, pharmaceutical industries, and 
+insurance companies, has surged [1]. It offers opportunities to develop data-driven analytics to improve the quality of the healthcare 
+system. However, healthcare data is often fragmented due to its highly sensitive and private nature. Different hospitals and 
+institutions typically only have access to their own patient records through electronic health records (EHRs). These records contain 
+sensitive protected health information (PHI), regulated by stringent laws such as the Health Insurance Portability and Accountability 
+Act (HIPAA) [2]. This fragmentation and regulation pose significant challenges for advanced healthcare data analytics, which require 
+enormous amounts of training data to be used. As a result, valuable data is isolated within individual organizations, limiting the 
+ability to conduct thorough analysis that could leverage data from multiple sources.
+∗ Corresponding author.
+E-mail address: khrhee@pknu.ac.kr (K. Hyune-Rhee).
+https://doi.org/10.1016/j.iot.2025.101579
+Received 8 October 2024; Received in revised form 15 March 2025; Accepted 15 March 2025
+Internet of Things 31 (2025) 101579 
+Available online 23 March 2025 
+2542-6605/© 2025 The Authors. Published by Elsevier B.V. This is an open access article under the CC BY license 
+( http://creativecommons.org/licenses/by/4.0/ ). 
+
+===== PAGE 2 =====
+M. Firdaus et al.
+To address these challenges, federated learning (FL) has gained popularity in healthcare for its ability to train shared global 
+models while keeping data within local institutions, thus enhancing data security and privacy [3]. Unlike traditional machine 
+learning (ML) methods, FL transmits trained models instead of raw data, enabling collaborative model training without exposing 
+sensitive information. In this sense, healthcare institutions can combine their data assets to improve overall healthcare outcomes, 
+ultimately benefiting patients and the healthcare system. Moreover, the FL approach aligns with stringent data privacy regulations 
+like HIPAA, making it ideal for advancing predictive diagnostics, personalized medicine, medical research, and healthcare analytics. 
+Thus, FL facilitates innovation in improving care delivery, as well as overcomes data fragmentation and regulatory challenges.
+Despite its benefits, the existing FL model with a centralized server poses several challenges within healthcare [4]. These 
+challenges include the risk of malicious attacks, regulatory compliance, and privacy vulnerabilities. Moreover, FL’s reliance on 
+a central server for model aggregation introduces a single point of failure, raising concerns about data security and privacy. Hostile 
+users may exploit this vulnerability to conduct various attacks, such as membership inference and poisoning attacks, which can 
+compromise the development of the global model and undermine overall system security and effectiveness [5]. Consequently, 
+healthcare entities may hesitate to participate in collaborative FL training due to these concerns. Therefore, addressing these 
+challenges is essential to fully harnessing FL’s potential in healthcare and ensuring the security and privacy of sensitive patient 
+data.
+Several privacy-preserving techniques have been proposed to address these challenges. Secure aggregation ensures that the server 
+only learns aggregated updates rather than individual client updates [6]. However, it still allows access to aggregated gradients, 
+which can leak information about the underlying model. Differential privacy (DP) is another commonly used technique in FL that 
+enhances security by adding noise to model updates, thereby protecting individual data [7]. While DP can be easily integrated 
+and implemented, it suffers from weaker privacy guarantees, which can lead to accuracy degradation. Additionally, DP exposes 
+raw gradients to the central server, potentially leading to privacy breaches [8]. Secure multi-party computation (MPC) enables 
+multiple clients to collaboratively compute a function over their private data without revealing it. However, MPC requires complex 
+synchronization protocols and significant computational overhead, making it inefficient for geo-distributed FL [9].
+Motivated by the challenges and concerns mentioned above, this paper introduces the FL framework enhanced with blockchain 
+and homomorphic encryption (HE). Our framework aims to minimize the role of the central server, enable collaborative model 
+training across healthcare organizations, and strengthen data security and privacy. HE facilitates encrypted gradient aggregation, 
+ensuring that the central server never has access to raw model updates. Unlike existing approaches (such as secure aggregation [6], 
+DP [7], and MPC [9]), HE offers strong privacy guarantees without compromising learning accuracy and can be integrated into 
+existing FL frameworks. In this context, HE protects data privacy by allowing multiple participants, such as healthcare entities, to 
+engage in collaborative FL model training while keeping their data encrypted. Additionally, blockchain provides decentralized trust, 
+transparency, and immutability, removing the need for a trusted central authority and preventing data manipulation. Blockchain 
+technology also ensures process integrity and transparency by recording all transactions on a distributed ledger. Furthermore, it can 
+establish a decentralized incentive system to promote participation in collaborative training among healthcare institutions. In short, 
+the combination of HE and blockchain ensures secure, verifiable, and tamper-resistant FL training, making our framework more 
+robust than current methods. Ultimately, this framework has the potential to transform healthcare analytics by enabling collaborative 
+institutions to improve medical knowledge while securely handling patient data.
+The structure of this paper unfolds as follows: Section 2 offers a brief background on homomorphic encryption, blockchain 
+technology, and federated learning, laying the foundation for understanding our proposed approach. Section 3 reviews related 
+works. In Section 4, we present our concept designed to address security and privacy challenges in healthcare systems. Section 5 
+analyzes the numerical results obtained from simulations conducted to evaluate the efficacy of our framework. Lastly, Section 6 
+concludes the paper.
+2. Preliminaries
+2.1. Traditional healthcare data sharing
+As technology progresses, there has been a surge in the amount of digital data as it has become easier to digitize various kinds 
+of information, including the medical-related data in healthcare field. This has brought forward a new opportunity to process 
+and analyze the data through myriad data analytics methods, including various machine learning techniques, which can be a 
+catalyst in generating insights and potentially enhance the quality of the overall healthcare outcome —such as through improved 
+predictive analytics, personalized medicine, more effective management, and even contributing to various findings, e.g., of more 
+potent medication, more proper treatments, or even breakthrough discoveries.
+However, due to the highly sensitive and private nature of healthcare data such as patients’ records, care providers (e.g., hospitals 
+and clinics) manage these data privately within their organization, i.e., in a silo approach. This is to preserve the anonymity of 
+individual patients, which should be maintained in the highest possible standard [10]. On the other hand, as data availability 
+through sharing has now been regarded as essential in enhancing the clinical treatments and medical research [11], there has 
+also been a paradigm shift in the medical-related research towards collaboration between multiple institutions, but required to be 
+conducted in a very strict manner to comply with the data privacy and protection laws. This has its own shortcoming since different 
+regions and institutions may have its own regulations, potentially results in data law conflict that are difficult to resolve, which 
+even more hinder the full potential of data utility across different institutions.
+Internet of Things 31 (2025) 101579 
+2 
+
+===== PAGE 3 =====
+M. Firdaus et al.
+Legacy approach resorts to bespoke data sharing contracts which often requires lengthy administration process, further reducing 
+efficiency and deterring the collaboration initiatives [12]. This is unfortunate considering the potential of collaboration to obtain 
+much more diverse data may promote expedition of data analysis and more accurate results, which in turn, benefit patients, and 
+the overall healthcare system, and health-related science in general. In contrast, global collaboration and extensive data sharing 
+may be highly beneficial in advancing the medical fields, such as research in critical illness or rare diseases with unknown cures, 
+e.g., previously COVID-19, HIV/AIDS, early detection of cancer, brain tumors, to mention a few.
+In addition, at the case where collaboration can be conducted via the bespoke contracts, traditional data sharing approaches 
+often relies on conventional anonymization techniques such as by suppressing directly identifying attributes or by generalizing, 
+aggregating, or randomizing quasi-identifying attributes in individual patient records [12], which is at risk due to the increasing 
+threat of reidentification attacks from anonymized data [12–15].
+2.2. Homomorphic encryption
+Homomorphic encryption (HE) is one type of encryption scheme that enables arithmetic operations to be performed directly on 
+encrypted data or ciphertext without the need for decryption in advance. Computed outputs are likewise encrypted, with identical (or 
+almost identical) results upon decryption, meaning that this scheme enables data processing without revealing the actual data [16]. 
+This brings substantial implications as it allows third-party services (e.g., cloud computing services, cloud applications for data 
+sharing and collaboration, and privacy-preserving ML services [17]) to offer more services to users without requiring to reveal 
+users’ sensitive information that compromises their privacy —a capability not satisfactorily offered by conventional encryption 
+techniques [18].
+An encryption technique is considered as homomorphic through an operation ‘‘⊛’’ if it satisfies Eq.  (1), where 𝐸 denotes the 
+encryption algorithm while 𝑀 denotes the set of all possible messages [18]. 
+𝐸(𝑚1) ⊛ 𝐸(𝑚2) = 𝐸(𝑚1 ⊛ 𝑚2), ∀𝑚1, 𝑚2 ∈ 𝑀 (1)
+Meanwhile, the HE property is described by Eq.  (2), with 𝐸𝑛𝑐 and 𝐷𝑒𝑐 denoting encryption and decryption, respectively, and 
+𝑓 () is a function applied on actual values (i.e., the cleartexts) 𝑎 and 𝑏 using encryption key 𝑝𝑘 [16]. 
+𝑓 (𝑎, 𝑏) = 𝐷𝑒𝑐(𝐸𝑛𝑐 (𝑝𝑘, 𝑎), 𝐸𝑛𝑐(𝑝𝑘, 𝑏)) (2)
+Generally, HE schemes in literature can be classified under three types of schemes based on the number of allowed operations 
+on the encrypted data [17,18]:
+1. Partially Homomorphic Encryption (PHE): supports a single type of operation (i.e., only additions or only multiplications) 
+for an unlimited number of times, meaning that there is no bound on the number of usages.
+2. Somewhat Homomorphic Encryption (SWHE): permits both operations, but only for a limited number of times.
+3. Fully Homomorphic Encryption (FHE) enables an unlimited number of operations to be performed an unlimited number of 
+times.
+2.3. Blockchain: Distributed ledger technology
+In a nutshell, blockchain technology is a decentralized and distributed ledger system that eliminates the need for centralized 
+management. Instead, it relies on a network of nodes working together to securely and immutably record transactions [19]. This 
+decentralized approach minimizes the need for intermediaries, enhances transparency, and uses cryptographic methods to improve 
+data security [20]. Originally designed to support cryptocurrencies like Bitcoin [21], blockchain technology has evolved into a 
+promising solution for various industries due to its prominent features. Beyond its initial use for Bitcoin, blockchain has gained 
+significant attention in sectors such as supply chain management, finance and banking, healthcare, and government. In these areas, 
+it offers a reliable environment, enhances data security, and has the potential to reform data management [22].
+A blockchain, as illustrated in Fig.  1, consists of the structure of a chain linked by hashes. Using Bitcoin as an instance, each 
+block comprises two main parts, i.e., a header and a body. The block header contains essential metadata about the block and is 
+composed of several components, including the difficulty value, the Merkle root, a timestamp, the hash of the previous block (parent 
+hash), the version number, and nonce. Meanwhile, the block body comprises the actual data being recorded on the blockchain and 
+consists of the number of transactions included in the block (i.e., transaction count), as well as the individual transactions from users, 
+which are stored in a Merkle tree structure [24]. Together, these elements form a robust and secure structure. The block header 
+summarizes the block’s contents and ensures each block is cryptographically linked to the previous block, creating a continuous 
+chain. The block body holds the transaction data, which can be efficiently verified and traced back to its source through the hash 
+pointer in the header, whereas the timestamp ensures the blocks’ correct order. Additionally, to secure data access and transmission, 
+blockchain uses a consensus algorithm maintained by all nodes to generate and update data. Consequently, this design ensures data 
+integrity, security, and transparency.
+2.4. Federated learning
+The Google AI team introduced Federated Learning [25] as a new communication-efficient optimization algorithm to address 
+the challenges of the classical ML approach, particularly data privacy and communication efficiency. In traditional ML, the  server 
+Internet of Things 31 (2025) 101579 
+3 
+
+===== PAGE 4 =====
+M. Firdaus et al.
+Fig. 1. Blockchain structure [23].
+consistently handles model training, performing both data training and aggregation in a centralized manner, where data is collected 
+and processed on a central server. In contrast, FL allows model training to occur directly on devices, such as smartphones or IoT 
+devices, without requiring raw data to be uploaded to a central server. In this sense, users only send the essential information 
+needed to update learning objectives while keeping sensitive data locally [26]. By keeping sensitive user data on local devices, FL 
+significantly mitigates privacy concerns by preventing certain attacks that attempt to gain unauthorized access to local training data, 
+making it particularly valuable in sensitive fields such as healthcare and finance [27]. Thus, due to its advantages, FL has been 
+applied in various learning domains and applications, including next-word prediction [28], enhancing vocabulary and language 
+models [29], developing predictive models for patient care [30], and facilitating low-latency vehicle-to-vehicle communication for 
+autonomous driving [31].
+3. Related works
+In the context of the existing healthcare environment, multiple challenges frequently deter the exchange of information and 
+seamless collaboration among healthcare institutions and stakeholders. This is understandable considering the inherently sensitive 
+nature of healthcare data results in the paramount concerns of data privacy and security [22]. The need to comply with safeguarding-
+yet-complicated personal data regulatory frameworks, including the ones specific to healthcare (e.g., HIPAA of the United States [2], 
+The Health Records Act (HRA) of Australia, and Health Information Privacy Code of New Zealand), further augment the intricacy 
+of data-sharing initiatives. The concept of FL was introduced as one of the possible solutions to resolve the challenges while 
+navigating through the requirement of healthcare data protection. FL offers a viable method for medical institutions to collaborate 
+and share insights derived from Electronic Health Record (EHR) data, while maintaining data privacy by not directly sharing the 
+data itself [32].
+In recent years, there have been several works in the literature that proposed employing HE (and its variant) for a more secure 
+FL, e.g., [16,17,33–35]. In [17], the authors proposed to utilize FHE to alleviate privacy and security concerns of FL over insecure 
+communication channels for the use case of IoT-enabled smart city communications. In particular, the authors proposed a flexible 
+design of FL and FHE combination which is adaptable to different IoT environments, with four distinct scenarios which are then 
+examined as a proof-of-concept (PoC) of the work. These four scenarios are then evaluated against an IoT dataset benchmark in 
+terms of their security and efficiency, which show improvements around 80.15 to 89.98% in terms of communication overhead 
+compared to the baseline scenario. In [33], the authors proposed a multiparty privacy-preserving ML framework entitled PFMLP 
+based on PHE and FL to perform ML tasks without revealing sensitive data. To enhance the efficiency of their technique over the 
+standard HE which induces relatively high computational overhead (e.g., additional overhead in encryption and decryption during 
+training), they proposed to employ the improved Pailier algorithm, yielding an increase in the training speed of 25%–28%.
+Related to the healthcare sector, in [16], the authors proposed the use of HE and FL to perform a privacy-preserving ML task 
+in medical data to safeguard against adversarial attack by establishing a secure multiparty computation protocol. In particular, the 
+authors employ the method in the training of Convolutional Neural Network (CNN) for the use case of COVID-19 detection with 
+real-world dataset and evaluate their method based on its performance, showing a comparative performance in terms of accuracy, F1 
+score, precision, and recall. Note that they observe the considerable tradeoff for the number of clients and the execution time. In [36], 
+the authors introduced a homomorphic outsourcing computing toolkit for secure predictive computation, utilizing the Paillier 
+encryption system and Lagrange interpolation to perform basic operations and encrypted comparisons. Similarly, [37] proposed 
+comparable homomorphic encryption (CompHE) schemes that enable efficient ciphertext comparison among multiple users using 
+Lagrange’s interpolation technique, enhancing security through collusion resistance in the semi-honest model while requiring fewer 
+modular exponentiations for comparison. These schemes also demonstrate applications in privacy-preserving COVID-19 contact 
+tracing and social distance control. In [38], the authors proposed a secure data fitting scheme for medical IoT based on the CKKS 
+Internet of Things 31 (2025) 101579 
+4 
+
+===== PAGE 5 =====
+M. Firdaus et al.
+Table 1
+Summary of notations.
+ Notations Descriptions  
+ 𝐻 Number of users (i.e., hospitals), 𝐻 = {ℎ1, ℎ2, ℎ3, … , ℎ𝑛}  
+ 𝐶 Number of clusters, 𝐶 = {𝐶1, 𝐶2, 𝐶3, … , 𝐶𝑛}  
+ 𝐸 Number of edge servers, 𝐸 = {𝐸1, 𝐸2, 𝐸3, … , 𝐸𝑛}  
+ 𝜓 𝑖𝑛 The initial parameters of the global model  
+ 𝑘𝑒𝑦𝑝𝑘
+𝐸 , 𝑘𝑒𝑦𝑠𝑘
+𝐸 Public–private key pairs of edge servers  
+ 𝑘𝑒𝑦𝑝𝑘
+ℎ , 𝑘𝑒𝑦𝑠𝑘
+ℎ Public–private key pairs of participating hospitals  
+ 𝐷 Local datasets, 𝐷𝑖 = {𝐷1, 𝐷2, 𝐷3, … , 𝐷𝑛}  
+ 𝑡 Number of iteration  
+ 𝛿 The similarity of hospitals’ data distribution  
+ 𝜃∗
+𝑖 The stationary solution of hospital 𝑖  
+ 𝜓 𝑡
+ℎ The trained local model  
+ ▽𝐹ℎ(𝜓) The average of model parameters update  
+ 𝐸𝑛𝑐 _𝐻𝐸 (𝜓 𝑡
+ℎ) The encrypted local model with homomorphic encryption 
+ 𝜓 𝑡
+𝑔𝑏𝑙 The new global model for the next iteration 𝑡 + 1  
+ 𝐸𝑛𝑐 (𝜓 𝑡
+ℎ) The encryption function of 𝜓 𝑡
+ℎ  
+ 𝐷𝑒𝑐(𝜓 𝑡
+𝑔𝑏𝑙 ) The decryption function of 𝜓 𝑡
+𝑔𝑏𝑙  
+ 𝑅𝑡
+ℎ Rewards of contribution for participating hospitals  
+homomorphic encryption algorithm, which encrypts the KAGGLE-HDP Heart Disease Prediction dataset and calculates the data’s 
+weight and deviation using gradient descent. The scheme achieves a recognition accuracy of 96.7%, offering high accuracy and 
+improved privacy protection. Additionally, the authors of [35] presented an FL-PHE combination within a distributed data fabric 
+architecture to establish a secure medical image analysis that complies with data protection and privacy laws, enabling multiple 
+clients (e.g., hospitals and medical data centers) to collaborate in training a machine-learning model without exchanging raw data, 
+thus not requiring centralized repository. The effectiveness of their method are tested on the use case of pituitary tumor classification, 
+which yields an accuracy of 83.31%.
+In terms of the integration of blockchain to the FL-HE itself, Wang et al. [39] proposed BPFL, a FL-HE scheme leveraging 
+consortium blockchain as its underlying distributed framework for the case of the Internet of Vehicle (IoV). In particular, the authors 
+improve the existing aggregation rules called Multi-Krum and combine it with HE to achieve ciphertext-level model aggregation 
+and filtering to enable the verifiability of the local models while being privacy-preserved. Further, for the blockchain side, they also 
+develop a reputation-based incentive mechanism to encourage users in IoV to actively and honestly participate in the FL scheme. 
+On the other hand, the work from [40] proposed a FL approach combining blockchain, HE, and reputation mechanisms to ensure 
+privacy and security in distributed data interactions. Edge nodes train ciphertext models using HE, with contributions evaluated 
+through a reputation system and verified on the blockchain. This approach incentivizes participation, protects data privacy, and 
+addresses security risks, while a joint aggregation and optimization algorithm enhances learning accuracy and performance.
+4. Proposed scheme
+This research aims to present a secure FL approach by utilizing HE and blockchain to tackle security and privacy concerns in 
+the healthcare system. Our scheme employs a cross-silo FL setting, which is suitable for healthcare applications where participants, 
+such as hospitals, are consistently available to contribute to collaborative training in each round of computation. Blockchain ensures 
+process integrity and transparency by recording all transactions in its distributed ledger and provides a decentralized incentive 
+mechanism to encourage participation in collaborative training among healthcare institutions [41]. Meanwhile, HE safeguards data 
+privacy by allowing multiple participants, such as healthcare entities, to engage in collaborative FL model training while keeping 
+their data encrypted. Table  1 shows the summary of notations used in this paper.
+4.1. System entities and components
+Before presenting the design architecture, we provide definitions of the relevant terms used in this paper.
+(i) Users: The users consist of participating medical institutions (i.e., hospitals in our case) that possess large amounts of raw 
+medical data. In this setup, hospitals act as data providers, where they perform local model training using their own data. 
+Additionally, encryption is conducted locally by the users before the data is uploaded to the edge server.
+(ii) Local datasets: The data is stored and processed locally at each participating hospital. Unlike traditional centralized ML, our 
+approach maintains data in a decentralized manner. Each hospital utilizes its own local dataset to train a model locally, which 
+enhances privacy and security by ensuring that the raw medical data, which contains sensitive information, never leaves the 
+local hospital environment.
+(iii) Sensitive information: FL aims to protect sensitive information by ensuring that this data never leaves the local entity 
+(i.e., hospitals) to minimize the risk of data breaches or unauthorized access. In the context of healthcare data sharing, 
+sensitive information includes personally identifiable information (PII) and PHI such as names, addresses, medical records, 
+diagnoses, treatment histories, genetic data, and any other health-related details.
+Internet of Things 31 (2025) 101579 
+5 
+
+===== PAGE 6 =====
+M. Firdaus et al.
+Fig. 2. Proposed model.
+(iv) Trained local model: Refers to a FL model that has been trained using data stored locally within hospitals. In this process, 
+each hospital sends only the trained model’s parameters to an edge server, where these updates are aggregated to create an 
+enhanced global model.
+(v) Clusters: The hospitals are grouped into clusters to minimize communication overhead between the users and the edge 
+server. Additionally, clustering participating hospitals based on geographic proximity, network conditions, or data distribution 
+can reduce computational load and improve system performance. It is worth noting that each cluster is equipped with a 
+blockchain-based edge server to collect the trained local models from the hospitals.
+(vi) Edge servers: The edge server is assigned to gather the trained local models submitted by hospitals and perform secure 
+model aggregation. Additionally, edge servers facilitate local storage, communication, and processing capabilities and reduce 
+communication and computation costs by enabling computational tasks to be performed closer to the hospitals, which act 
+as data providers. In this setup, blockchain is utilized to establish distributed edge servers, ensuring the authenticity and 
+integrity of transactions in healthcare data sharing, and facilitating decentralized reward mechanism.
+(vii) Global model: After training, each hospital sends only the updated parameters of its local model to the edge server within 
+its cluster. The edge server then aggregates these updates to create the new global model. By leveraging homomorphic 
+encryption, our approach allows the aggregation of encrypted local model updates without needing to decrypt them, thereby 
+enhancing privacy and security in the system.
+(viii) Trusted authority (TA): A trusted third party that responsible for initializing various security parameters, including generating 
+and managing cryptographic keys. These keys are used to encrypt model updates exchanged between hospitals and the 
+blockchain-based edge server. Additionally, the trusted authority authenticates the hospitals’ identities to ensure that only 
+legitimate and authorized hospitals can participate in the training process.
+4.2. Design architecture and procedures
+4.2.1. System initialization
+Firstly, the initial set of model parameters (such as weights and biases for a neural network) is generated. The initial parameters 
+of global model (𝜓 𝑖𝑛) are chosen based on the model architecture and the specific requirements of the application (e.g., a healthcare 
+prediction model). Then, 𝜓 𝑖𝑛 are stored on distributed edge servers using blockchain smart contracts and shared with all participating 
+Internet of Things 31 (2025) 101579 
+6 
+
+===== PAGE 7 =====
+M. Firdaus et al.
+hospitals. Here, only authorized hospitals are permitted to join the system and download the initial model to participate in 
+collaborative healthcare data sharing. The TA generates public and private key pairs (𝑘𝑒𝑦𝑝𝑘
+𝐸 , 𝑘𝑒𝑦𝑠𝑘
+𝐸 ) for blockchain-based edge servers 
+to use in the data-sharing process. Similarly, hospitals are required to generate their own public and private key pairs (𝑘𝑒𝑦𝑝𝑘
+ℎ , 𝑘𝑒𝑦𝑠𝑘
+ℎ ), 
+which will be used to encrypt model updates. Furthermore, by employing a consortium blockchain, the edge servers are preselected 
+and trusted, thereby enhancing the overall security and reliability of the system.
+As illustrated in Fig.  2, we organize the set of users (i.e., hospitals) 𝐻 = {ℎ1, ℎ2, ℎ3, … , ℎ𝑛} into clusters 𝐶 = {𝐶1, 𝐶2, 𝐶3, … , 𝐶𝑛}, 
+with each cluster equipped with blockchain-based edge servers 𝐸 = { 𝐸1, 𝐸2, 𝐸3, … , 𝐸𝑛}. In this context, the clustering mechanism 
+is performed based on the similarity (𝛿) of the hospitals’ data distribution using the cosine similarity technique [42], as follows: 
+𝛿ℎ𝑖,ℎ𝑗 ∶= 𝛿(𝜃∗
+𝑖 , 𝜃∗
+𝑗 ) ∶=
+(𝜃∗
+𝑖 , 𝜃∗
+𝑗 )
+‖‖‖𝜃∗
+𝑖
+‖‖‖
+‖‖‖𝜃∗
+𝑗
+‖‖‖
+(3)
+𝐶𝑖, 𝐶𝑗 ← arg min
+𝐶𝑖∪𝐶𝑗
+(max 𝛿𝐶𝑖,𝐶𝑗 ) (4)
+where 𝜃∗
+𝑖 , 𝜃∗
+𝑗 represent the stationary solution [42] of hospital 𝑖 dan 𝑗. The system then separates the hospitals into groups such that 
+the maximum similarity between hospitals from different clusters is minimized (see Eq.  (4)). This approach effectively partitions 
+the hospitals into groups that are more similar to each other.
+4.2.2. Local model training and uploading
+In every iteration 𝑡, each hospital ℎ𝑖 downloads the global model 𝜓 𝑡 and trains it locally using their dataset 𝐷𝑖 = {𝐷1, 𝐷2, 𝐷3, … ,
+𝐷𝑛}. Here, 𝐷𝑖 is not shared with other 𝐻, where 𝐷𝑖 ∪ 𝐷𝑗 = 𝜙, ∀𝑖 ≠ 𝑗, where 𝑖, 𝑗 ∈ 𝐻. The training local models are computed as 
+follows: 
+𝜓 𝑡
+ℎ = 𝜓 𝑡 − 𝜂ℎ▽𝐹ℎ(𝜓) (5)
+𝐹ℎ(𝜓) = 1
+𝑛ℎ
+∑
+𝑥𝑖∈𝐷𝑖
+𝑓𝑖(𝜓) (6)
+where 𝑛ℎ is the total samples of ℎ, 𝑓𝑖 is a loss function for 𝑖th data point of ℎ (𝑥(𝑖)
+𝑝 , 𝑦(𝑖)
+𝑝 ), ▽𝐹ℎ(𝜓) is the average of model parameters 
+update, and 𝜂ℎ is learning rate. After training, hospitals obtain local model updates 𝜓 𝑡
+ℎ and then encrypt them using HE and their 
+public keys to ensure data privacy, as follows: 
+𝐸𝑛𝑐 _𝐻𝐸 (𝜓 𝑡
+ℎ) = 𝐸𝑛𝑐 (𝜓 𝑡
+ℎ, 𝑘𝑒𝑦𝑝𝑘
+ℎ ) (7)
+The encrypted local models 𝐸𝑛𝑐 _𝐻𝐸 (𝜓 𝑡
+ℎ) are then uploaded to the cluster edge server 𝐸𝑖. Each hospital’s model update is recorded 
+as a transaction on the blockchain with hash function ℎ𝑎𝑠ℎ{𝐸𝑛𝑐 _𝐻𝐸 (𝜓 𝑡
+ℎ1
+), 𝐸𝑛𝑐_𝐻𝐸 (𝜓 𝑡
+ℎ2
+), … , 𝐸𝑛𝑐_𝐻𝐸 (𝜓 𝑡
+ℎ𝑛)}, where transactions are 
+validated by network nodes (i.e., distributed edge servers) 𝐸1, 𝐸2, 𝐸3, … , 𝐸𝑛. It is worth noting that our system verifies performance 
+by assessing the prediction accuracy of the trained local model [43] before proceeding with the model aggregation process. 
+Therefore, only verified 𝐸𝑛𝑐 _𝐻𝐸 (𝜓 𝑡
+ℎ) will be aggregated and stored for contribution assessment in the blockchain network. 
+𝐸𝑖 ← ℎ𝑎𝑠ℎ{𝐸𝑛𝑐 _𝐻𝐸 (𝜓 𝑡
+ℎ1
+), 𝐸𝑛𝑐_𝐻𝐸 (𝜓 𝑡
+ℎ2
+), … , 𝐸𝑛𝑐_𝐻𝐸 (𝜓 𝑡
+ℎ𝑛)} (8)
+4.2.3. Model aggregation
+After the local model training process, the blockchain-based edge servers 𝐸𝑖 receive encrypted model updates 𝐸𝑛𝑐 _𝐻𝐸 (𝜓 𝑡
+ℎ) from 
+their assigned clusters 𝐶𝑖 of participating hospitals and perform model aggregation. 𝐸𝑖 provide local computation capabilities to 
+perform the aggregation tasks based on homomorphic encryption technique. Then, 𝐸𝑖 aggregate the model updates by averaging 
+𝐸𝑛𝑐 _𝐻𝐸 (𝜓 𝑡
+ℎ) from all participating hospitals to generate the new global model through the following equation: 
+𝜓 𝑡
+𝑔𝑏𝑙 =
+𝐻∑
+ℎ=1
+𝑛ℎ
+𝑁 𝐸𝑛𝑐 _𝐻𝐸 (𝜓 𝑡
+ℎ) (9)
+where 𝑁 represents the overall number of data points (samples). Since the model updates are encrypted, the edge server does 
+not have access to the raw data or the specific details of the model updates; it only aggregates the encrypted updates. By using 
+homomorphic encryption as a secure aggregation technique, the edge server can aggregate model updates without decrypting them.
+Furthermore, the new global model 𝜓 𝑡
+𝑔𝑏𝑙 is shared with all distributed edge servers 𝐸𝑖 in the blockchain network. The distributed 
+nature of the edge servers helps mitigate the risk of single points of failure, thereby enhancing the overall security of the FL 
+framework. As a result, participating hospitals can download and decrypt the new global model, 𝑑𝑒𝑐 (𝜓 𝑡
+𝑔𝑏𝑙 ), for the next round of 
+local training at iteration (𝑡 + 1).
+Internet of Things 31 (2025) 101579 
+7 
+
+===== PAGE 8 =====
+M. Firdaus et al.
+Algorithm 1 A detailed of the proposed scheme. 𝑡 is number of iteration; 𝐻 number of hospitals ℎ𝑛; 𝐸 number of edge servers 𝐸𝑛; 
+𝐷𝑖 is the local datasets; 𝐸𝑝 is the number of local epochs; and 𝜂 is learning rate.
+1: procedure EdgeServer:
+2:  𝐸𝑖 initialize 𝜓 𝑖𝑛
+3:  𝐸, 𝐻 ← (𝑘𝑒𝑦𝑝𝑘
+𝐸 , 𝑘𝑒𝑦𝑠𝑘
+𝐸 ), (𝑘𝑒𝑦𝑝𝑘
+ℎ , 𝑘𝑒𝑦𝑠𝑘
+ℎ ) ⊳ Public-private keypairs generation
+4:  𝛿ℎ𝑖,ℎ𝑗 ∶= 𝛿(𝜃∗
+𝑖 , 𝜃∗
+𝑗 ) ∶=
+(𝜃∗
+𝑖 ,𝜃∗
+𝑗 )
+‖‖‖𝜃∗
+𝑖
+‖‖‖
+‖‖‖𝜃∗
+𝑗
+‖‖‖
+5:  𝐶𝑖, 𝐶𝑗 ← arg min𝐶𝑖∪𝐶𝑗 (max 𝛿𝐶𝑖,𝐶𝑗 ) ⊳ Distribute the users into clusters
+6:  for each round 𝑡 = 1,2, ..., T do
+7:  for each hospital 𝑖 ∈ ℎ𝑖 in parallel do
+8:  𝐸𝑛𝑐 _𝐻𝐸 (𝜓 𝑡
+ℎ) ← UserUpdate(𝑖, 𝜓𝑡)
+9:  𝜓 𝑡
+𝑔𝑏𝑙 = ∑𝐻
+ℎ=1
+𝑛ℎ
+𝑁 𝐸𝑛𝑐 _𝐻𝐸 (𝜓 𝑡
+ℎ) ⊳ Global model aggregation with HE
+10:  end for
+11:  end for
+12: end procedure
+13: procedure UserUpdate:(𝑖, 𝜓𝑡)
+14:  𝐸𝑛𝑐 _𝐻𝐸 (𝜓 𝑡
+ℎ) ← 𝜓 𝑡 ⊳ Executes on hospital 𝑖
+15:  for each local epoch 𝑗 from 1 to 𝐸𝑝 do
+16:  for each batch 𝑏 = {𝑥, 𝑦} of 𝐷𝑖 do
+17:  𝜓 𝑡
+ℎ = 𝜓 𝑡 − 𝜂ℎ▽𝐹ℎ(𝜓); ⊳ Local model training
+18:  𝐹ℎ(𝜓) = 1
+𝑛ℎ
+∑
+𝑥𝑖∈𝐷𝑖 𝑓𝑖(𝜓)
+19:  𝐸𝑛𝑐 _𝐻𝐸 (𝜓 𝑡
+ℎ) = 𝐸𝑛𝑐 (𝜓 𝑡
+ℎ, 𝑘𝑒𝑦𝑝𝑘
+ℎ ) ⊳ Encrypt the trained local models
+20:  end for
+21:  end for
+22:  return 𝐸𝑛𝑐 _𝐻𝐸 (𝜓 𝑡
+ℎ) for aggregation
+23: end procedure
+24: procedure IncentiveUser(𝑅𝑡
+ℎ)
+25:  𝐸𝑖 collects the list of participating hospitals
+26:  ℎ1, ℎ2, ..., ℎ𝑛
+27:  for ℎ1, ℎ2, ..., ℎ𝑛; 𝐸𝑖 do
+28:  𝐸𝑖 ← ConfirmTransaction
+29:  ℎ𝑎𝑠ℎ(𝜓 𝑡
+ℎ1
+, 𝜓𝑡
+ℎ2
+, ⋯ , 𝜓𝑡
+ℎ𝑛)
+30:  𝐼𝑛𝑐𝑒𝑛𝑡𝑖𝑣𝑒 → 𝑅𝑡
+ℎ = 𝑐𝑜𝑛𝑡𝑟𝑖𝑏𝑢𝑡𝑖𝑜𝑛 ⋅ 𝜓 𝑡
+𝑔𝑏𝑙 ⊳ Contribution calculation
+31:  𝑅𝑡
+ℎ are distributed to ℎ1, ℎ2, ..., ℎ𝑛
+32:  end for
+33: end procedure
+4.2.4. Contribution calculation
+Here, hospitals are incentivized through the use of blockchain-based smart contracts, which reward them for meeting the trans-
+action requirements of the system model. The blockchain keeps track of the list of participating hospitals 𝐻 = {ℎ1, ℎ2, ℎ3, … , ℎ𝑛} that 
+contribute to generating the global model 𝜓 𝑡
+𝑔𝑏𝑙 , verifies their transactions stored in blockchain-based edge servers ℎ𝑎𝑠ℎ{𝐸𝑛𝑐 _𝐻𝐸 (𝜓 𝑡
+ℎ1
+),
+𝐸𝑛𝑐 _𝐻𝐸 (𝜓 𝑡
+ℎ2
+), … , 𝐸𝑛𝑐_𝐻𝐸 (𝜓 𝑡
+ℎ𝑛)}, and calculates rewards based on their contribution to 𝜓 𝑡
+𝑔𝑏𝑙 according to the below equation: 
+𝐼𝑛𝑐𝑒𝑛𝑡𝑖𝑣𝑒 → 𝑅𝑡
+ℎ = 𝑐𝑜𝑛𝑡𝑟𝑖𝑏𝑢𝑡𝑖𝑜𝑛 ⋅ 𝜓 𝑡
+𝑔𝑏𝑙 (10)
+The iterations continue until the model either reaches a specified level of accuracy or exceeds a predetermined number of 
+iterations. The detailed procedures of the proposed scheme can be found in Algorithm 1.
+4.3. Security analysis
+4.3.1. Eliminating centralized authority approach
+Blockchain minimizes or replaces the role of a central server, removing a single point of failure and reducing vulnerability 
+to attacks. In our framework, we utilize a consortium blockchain, where a group of pre-selected entities (i.e., edge servers) 
+collaboratively manages the network, ensuring decentralized control while maintaining efficiency and accountability. Additionally, 
+we employ a cross-silo FL setting, where decentralized data owners (i.e., hospitals) collaboratively train ML models without sharing 
+raw data. Integrating blockchain into FL further decentralizes the process by securely recording model updates and ensuring 
+consensus among participants, thus eliminating reliance on a central coordinator and reducing the risk of manipulation or tampering. 
+This approach enables secure, privacy-preserving data collaboration across healthcare institutions.
+Internet of Things 31 (2025) 101579 
+8 
+
+===== PAGE 9 =====
+M. Firdaus et al.
+Table 2
+Simulation parameters settings.
+ Parameter Specification  
+ Processor Intel® Core™ i7-7700 8 CPU @ 3.60 GHz  
+ Memory 16 GB DDR4 RAM  
+ ML library Keras 2.15.0, TensorFlow 2.15.0, Scikit-learn 1.4.2  
+ Extension library Numpy 1.19.5, Pandas 1.3.3  
+ HE library Microsoft SEAL - Pyfhel 2.3.1  
+ Programming language Python 3.8.19  
+ Blockchain environment Ganache Truffle GUI 2.4.0  
+ Dataset COVID-19 radiography [44] and brain tumor MRI [45] 
+ ML model Convolutional Neural Network (CNN)  
+4.3.2. Secure computation and mitigation of inference attacks
+HE allows computations on encrypted data without revealing the underlying plaintext, ensuring that patient data remains private 
+throughout the model training and aggregation process. Furthermore, after local training, model updates or gradients are encrypted 
+to minimize the risk of leaking sensitive information during collaborative learning, ensuring that only users with the corresponding 
+secret key can decrypt the model. This preventive measure ensures that shared model updates cannot be reconstructed or exploited.
+4.3.3. Reliable data security and integrity management
+In the FL framework, data owners (i.e., hospitals) maintain full control over their sensitive data by storing it locally. Instead of 
+sharing raw data, only model updates are uploaded to the blockchain network, ensuring that the data itself remains private and 
+secure. To prevent dishonest hospitals from sharing invalid or corrupted data, all transactions are verified by the distributed edge 
+nodes based on the prediction accuracy assessment. Thus, only the verified model updates are processed for global aggregation.
+4.3.4. Auditable and transparent collaborative learning
+Blockchain records all transactions (e.g., model updates and rewards) in an immutable distributed ledger. By using smart 
+contracts, blockchain incentivizes healthcare institutions to actively participate in FL training. Rewards are distributed based on 
+contributions to the global model, promoting fairness and collaboration. Furthermore, the decentralized incentive mechanism 
+discourages dishonest behavior, as rewards are tied to verifiable contributions recorded on the blockchain.
+5. Numerical results and discussion
+5.1. Dataset preparation
+In our experimental evaluation, we used public datasets for COVID-19 radiography and brain tumor Magnetic Resonance Imaging 
+(MRI), referencing the work of [44,45], respectively. We selected these datasets to represent use cases that require collaborative 
+handling, such as pandemic diseases and critical conditions needing immediate treatment. The COVID-19 radiography database 
+was chosen for its relevance to the COVID-19 pandemic, where early and reliable detection is crucial for controlling the virus’s 
+spread and ensuring timely treatment. This dataset includes X-ray images of COVID-19 positive cases, normal lungs, and other 
+lung infections like viral pneumonia and lung opacity (non-COVID lung infection). It has expanded to 3616 COVID-19 positive 
+X-ray images, along with thousands of normal and lung infection cases. In our study, we focused on two categories, normal and 
+COVID, specifically concentrating on the COVID-19 detection process to achieve our design objectives. On the other hand, the brain 
+tumor MRI dataset used in this study consists of 7023 high-quality MRI scans of the human brain, categorized into four distinct 
+classes: glioma, meningioma, pituitary tumor, and no tumor. This dataset provides comprehensive imaging data for both healthy 
+and tumor-affected brains. In our work, we focused on two categories, no tumor and meningioma, aiming to develop and evaluate 
+ML models for accurate tumor detection and classification, as well as to enhance treatment planning in the medical field. Fig.  3 
+illustrates the samples of dataset for COVID-19 X-ray image [44] and brain tumor MRI [45].
+5.2. Evaluation setup
+To implement our proposed scheme, we divided the process into two scenarios: HE-based FL for secure healthcare data sharing 
+and blockchain-based FL to enable decentralized collaborative training. The Convolutional Neural Network (CNN) model was chosen 
+for its effectiveness in image recognition, particularly in training models for COVID-19 and brain tumor MRI data, which are 
+essential for medical imaging tasks. Fig.  4 provides an overview of the CNN architecture, which includes six convolutional layers, 
+six MaxPooling layers, two fully connected layers, and a Softmax layer. A total of 352 kernel filters are used across the convolution 
+layers. The first Conv2D layer has 32 filters of size 3 × 3, followed by a MaxPooling layer with a pool size of 2 × 2. The following 
+layers use 32, 32, 64, 64, and 128 filters of size 3 × 3, each followed by MaxPooling layers with a 2 × 2 pool size. Then, two 
+fully connected layers with 128 and 64 hidden units lead to the final Softmax output layer, producing two outcomes: ‘‘normal’’ and 
+‘‘COVID’’ for COVID-19 X-ray images, as well as ‘‘no tumor’’ and ‘‘meningioma’’ for brain tumor MRI data.
+Internet of Things 31 (2025) 101579 
+9 
+
+===== PAGE 10 =====
+M. Firdaus et al.
+Fig. 3. The COVID-19 X-ray image [44] and brain tumor MRI [45] dataset samples: (a) COVID-19 negative X-ray image; (b) COVID-19 negative X-ray image; 
+(c) Human brain MRI with no tumor; (d) Human brain MRI with meningioma.
+The experiments were conducted using Python 3.8.19, leveraging the ML libraries Keras 2.15.0 and TensorFlow 2.15.0 for 
+building and training the CNN models. Scikit-learn 1.4.2 was employed for additional ML functionalities, including model evaluation 
+and metrics computation. Data manipulation and numerical operations were handled using Numpy 1.19.5 and Pandas 1.3.3, which 
+facilitated efficient data preprocessing and analysis. For secure computation, particularly in the context of homomorphic encryption, 
+we integrated Microsoft SEAL with Pyfhel 2.3.1, allowing for privacy-preserving model training and evaluation. Microsoft SEAL [46] 
+is a homomorphic encryption library developed by Microsoft and released in 2015. Complementing this, Pyfhel [47] provides a 
+user-friendly interface while maintaining access to the core functionalities of FHE. As a Python wrapper for Microsoft SEAL, Pyfhel 
+features a layered architecture that facilitates access to homomorphic operations, key management, context parameters, ciphertexts, 
+and serialization capabilities.
+On the other hand, we deployed the Ganache Truffle GUI to create a local blockchain environment for deploying Ethereum smart 
+contracts and transparently evaluating users’ contributions. We used the default settings, operating on an RPC server in auto-mining 
+mode, which included a gas price of 20,000,000,000 wei and a gas limit of 6,721,975 units. User addresses were generated through 
+Ganache, with each address holding 100.00 ETH and being publicly accessible. The experiments and evaluations were conducted 
+on a computer with an Intel® Core™ i7-7700 processor, featuring 8 CPUs at 3.60 GHz and 8 GB of RAM. The environment settings 
+and specifications can be seen in Table  2, and the code is publicly available on GitHub.1
+1 https://github.com/blockchainflhe/Blockchain-based-Federated-Learning-with-Homomorphic-Encryption.
+Internet of Things 31 (2025) 101579 
+10 
+
+===== PAGE 11 =====
+M. Firdaus et al.
+Fig. 4. The proposed CNN model architecture.
+Fig. 5. The best performance of proposed model.
+Table 3
+The configuration of the training and testing datasets.
+ Configuration COVID-19 datasets Brain tumor datasets  
+ 𝑆𝑐ℎ𝑒𝑚𝑒 1 𝐷𝑡𝑟𝑎𝑖𝑛 = 100, 𝐷𝑡𝑒𝑠𝑡 = 30 𝐷𝑡𝑟𝑎𝑖𝑛 = 100, 𝐷𝑡𝑒𝑠𝑡 = 30  
+ 𝑆𝑐ℎ𝑒𝑚𝑒 2 𝐷𝑡𝑟𝑎𝑖𝑛 = 400, 𝐷𝑡𝑒𝑠𝑡 = 100 𝐷𝑡𝑟𝑎𝑖𝑛 = 400, 𝐷𝑡𝑒𝑠𝑡 = 100 
+ 𝑆𝑐ℎ𝑒𝑚𝑒 3 𝐷𝑡𝑟𝑎𝑖𝑛 = 800, 𝐷𝑡𝑒𝑠𝑡 = 200 𝐷𝑡𝑟𝑎𝑖𝑛 = 800, 𝐷𝑡𝑒𝑠𝑡 = 200 
+5.3. Experiment results
+We started by selecting 1000 records from the original dataset for both COVID-19 and brain tumor MRI data, dividing them 
+into 800 records for training and 200 for testing. We configured several parameters, including the number of epochs, batch size, 
+and learning rate, set to 32, 10, and 0.001, respectively. Various metrics, including precision, recall, F1-score, and accuracy, were 
+used to evaluate the system’s performance. This simulation observed a procedure similar to that outlined in [16], aligning with our 
+approach. Fig.  5 presents the best performance of our proposed model for detecting COVID-19 and brain tumors. For the COVID-19 
+dataset, the model achieved precision, recall, F1 score, and accuracy values of 0.9735, 0.9725, 0.9725, and 0.9725, respectively. 
+Meanwhile, for the brain tumor dataset, the model achieved precision, recall, F1 score, and accuracy values of 0.8837, 0.8625, 
+Internet of Things 31 (2025) 101579 
+11 
+
+===== PAGE 12 =====
+M. Firdaus et al.
+Fig. 6. The accuracy results from the varying data distributions across hospitals.
+Fig. 7. The total time for model encryption and decryption.
+0.8606, and 0.8625, respectively. We then varied the data distribution among hospitals to observe its impact on the accuracy of the 
+local model updates. The configuration of the training and testing datasets is shown in Table  3. Fig.  6 illustrates the accuracy results 
+obtained from varying data distributions across hospitals over 10 epochs. In this evaluation, 𝑆𝑐ℎ𝑒𝑚𝑒 1, which used the brain tumor 
+dataset, produced the lowest accuracy, while 𝑆𝑐ℎ𝑒𝑚𝑒 3, utilizing the COVID-19 dataset, achieved the highest accuracy for the local 
+model updates. In this sense, hospitals with larger datasets tend to achieve higher accuracy in local training. Conversely, hospitals 
+with smaller datasets typically experience lower accuracy.
+After local training, hospitals encrypt the local model updates using homomorphic encryption before uploading it to edge servers, 
+and they decrypt the global model before the local training process begins. Fig.  7 shows the total time hospitals spend encrypting and 
+decrypting the global model during collaborative training. As depicted in the figure, the decryption process is faster than encryption 
+due to simpler operations involved, such as reversing encryption transformations or applying straightforward algorithms to retrieve 
+the original plaintext [48]. On the other hand, Fig.  8 shows the overall execution times across clusters with different levels of data 
+distribution. We configured five clusters: 𝐶1 and 𝐶2 exhibit almost homogeneous data distribution, whereas 𝐶4 and 𝐶5 show more 
+heterogeneous data distribution, with 𝐶3 positioned in the middle. As predicted, the execution time in 𝐶5 is higher than in other 
+clusters, especially 𝐶1. In clusters with more heterogeneous data, such as C4 and C5, the variability between data points increases, 
+causing the local models to diverge more from each other. This divergence leads to poor convergence and longer processing times 
+during model training and aggregation. Consequently, the execution time in C5, with the most heterogeneous data, is higher than in 
+other clusters, particularly compared to C1, which has more homogeneous data. Homogeneous data clusters converge more quickly, 
+leading to shorter execution times.
+We continued our observation by varying the number of hospitals in each cluster: 𝐶1 with 2 hospitals, 𝐶2 with 3 hospitals, 
+𝐶3 with 4 hospitals, and 𝐶4 with 5 hospitals. We performed the evaluation on both the COVID-19 and brain tumor datasets 
+Internet of Things 31 (2025) 101579 
+12 
+
+===== PAGE 13 =====
+M. Firdaus et al.
+Fig. 8. Execution time in seconds with the various data distribution level.
+Table 4
+The results of system performance.
+ Cluster Dataset Precision Recall F1 Score Accuracy 
+ 𝐶1 → 𝐻 = 2 COVID-19 0.86511 0.83750 0.83436 0.83750  
+ 𝐶2 → 𝐻 = 3 COVID-19 0.87212 0.84500 0.84212 0.84500  
+ 𝐶3 → 𝐻 = 4 COVID-19 0.90724 0.90000 0.89955 0.90000  
+ 𝐶4 → 𝐻 = 5 COVID-19 0.93859 0.93000 0.92965 0.93000  
+ 𝐶1 → 𝐻 = 2 Brain tumor 0.82608 0.73333 0.71292 0.73333  
+ 𝐶2 → 𝐻 = 3 Brain tumor 0.81127 0.76750 0.75902 0.76750  
+ 𝐶3 → 𝐻 = 4 Brain tumor 0.87537 0.85000 0.84742 0.85000  
+ 𝐶4 → 𝐻 = 5 Brain tumor 0.88368 0.86250 0.86057 0.86250  
+Table 5
+The results of system computation time.
+ Cluster (COVID 19) Total encryption time (s) Aggregation time (s) Total execution time (s) 
+ 𝐶1 → 𝐻 = 2 599.83940 119.42638 1330.64357  
+ 𝐶2 → 𝐻 = 3 899.26339 186.61607 1629.75875  
+ 𝐶3 → 𝐻 = 4 1160.82893 230.19174 1960.49950  
+ 𝐶4 → 𝐻 = 5 1655.71437 269.49947 2511.15039  
+Table 6
+The effect of 𝑞 and 𝑚 to computation time.
+ Parameters Total encryption time (s) Aggregation time (s) Total execution time (s) 
+ 𝑞 = 128, 𝑚 = 1024 1655.71437 269.49947 2122.81493  
+ 𝑞 = 192, 𝑚 = 1024 1660.53336 277.79007 2577.25304  
+ 𝑞 = 128, 𝑚 = 2048 2282.26301 895.55570 4025.69411  
+ 𝑞 = 192, 𝑚 = 2048 3079.10102 1207.83221 5929.70427  
+using homogeneous data distributions. Table  4 summarizes the results of system performance, where 𝐶5 with COVID-19 dataset 
+outperforms other clusters in every performance parameter: precision of 0.93859, recall of 0.93000, F1 score of 0.92965, and 
+accuracy of 0.93000. In contrast, 𝐶1 with brain tumor dataset achieves lower performance metrics: precision of 0.82608, recall 
+of 0.73333, F1 score of 0.71292, and accuracy of 0.73333. Moreover, Table  5 depicts the results of system computation time 
+among clusters. In this setting, we use the COVID-19 dataset with 𝑆𝑐ℎ𝑒𝑚𝑒 3 in Table  3. The results indicate that an increase in 
+the number of participating hospitals leads to a proportional increase in system computation time. Additionally, we also adjusted 
+two hyperparameters in the homomorphic encryption environment: the ciphertext modulus (𝑞) and the polynomial modulus (𝑚). 𝑞
+controls how much noise can accumulate before decryption fails [47], while 𝑚 is associated with the complexity of the encryption 
+scheme [46]. In our simulation, the value of 𝑞 is set to 128 and 192, while the value of 𝑚 is set to 1024 and 2048. Table  6 presents 
+the effect of 𝑞 and 𝑚 to computation time. As a result, when 𝑞 = 128 and 𝑚 = 1024, the overall computation time is lower compared 
+to other settings. In contrast, when 𝑞 = 192 and 𝑚 = 2048 , the computation time is the highest. This indicates that larger values of 
+𝑞 and 𝑚 lead to increased ciphertext sizes and longer computation times.
+Internet of Things 31 (2025) 101579 
+13 
+
+===== PAGE 14 =====
+M. Firdaus et al.
+Fig. 9. The total number of transactions generated in the blockchain network.
+Fig. 10. The users’ contribution results.
+Fig. 11. Performance comparison with the existing works.
+Internet of Things 31 (2025) 101579 
+14 
+
+===== PAGE 15 =====
+M. Firdaus et al.
+Once hospitals upload their local model updates to the cluster edge servers, these updates are recorded as transactions on the 
+blockchain network. Fig.  9 illustrates the total number of transactions generated in the blockchain network across various epochs 
+(𝐸𝑝). 𝐸𝑝2 recorded 149 transactions, 𝐸𝑝4 generated 290, 𝐸𝑝6 reached 434, and 𝐸𝑝8 and 𝐸𝑝10 generated 578 and 722 transactions, 
+respectively. On the other hand, Fig.  10 demonstrates how users’ contributions are distributed to build the FL global model using 
+the Ethereum platform. Five collaborative entities (hospitals) have been established to develop a robust framework for sharing 
+healthcare data. This process entails gathering and integrating models from different hospitals within the proposed framework and 
+storing them on a decentralized ledger blockchain. Following this, hospitals receive rewards based on their documented contributions 
+to the blockchain’s distributed ledger when a new global model is generated.
+Lastly, we compare our proposed model with recent studies [16,35]. As shown in Fig.  11, the results indicate that our model 
+outperforms the approach presented in [16] for the COVID-19 dataset and demonstrates superior performance compared to the 
+work suggested in [35] for the brain tumor dataset. Our framework outperforms both studies in all key performance metrics, 
+including precision, recall, F1-score, and accuracy. For example, in the COVID-19 dataset, the accuracy achieved by [16] is 0.8300, 
+while our proposed framework achieves an accuracy of 0.9725. Similarly, for the brain tumor dataset, [35] achieves an accuracy 
+of 0.8331, while our framework performs better with an accuracy of 0.8625. In summary, while both [16,35] focus on securing 
+the FL process using homomorphic encryption, our proposed framework goes a step further by integrating blockchain technology, 
+which strengthens data security, decentralization, and incentivizes collaboration. In our framework, we enhance security and privacy 
+through both blockchain and homomorphic encryption, which not only secures the model but also ensures transparency and trust 
+among collaborating healthcare institutions. This dual-layered security approach in our framework allows for more robust protection 
+of data and model integrity, supporting a more collaborative and secure environment for model training, ultimately leading to more 
+accurate predictions and improved overall performance.
+6. Conclusion
+This paper presents a secure approach to Federated Learning (FL) that utilizes homomorphic encryption and blockchain to 
+address security and privacy concerns within the healthcare system. Our approach adopts a cross-silo FL framework suitable for 
+healthcare applications. Blockchain technology ensures integrity and transparency by recording all transactions on a distributed 
+ledger. Additionally, blockchain facilitates a decentralized incentive system design to encourage participation in collaborative 
+training across healthcare institutions. Homomorphic encryption safeguards sensitive medical information during collaborative FL 
+model training and aggregation, enabling computations on encrypted data without decryption, thereby ensuring privacy and security. 
+Numerical results demonstrate that our scheme aids healthcare privacy protection and achieves intended design objectives with 
+decent accuracy. However, future research should focus on critical areas such as the impact of heterogeneous data distribution 
+among hospitals, which challenges model personalization and convergence. Moreover, developing robust defense strategies against 
+potential FL vulnerabilities and attacks is crucial to ensure the security and integrity of FL systems.
+CRediT authorship contribution statement
+Muhammad Firdaus: Writing – review & editing, Writing – original draft, Visualization, Validation, Software, Methodology, 
+Investigation, Formal analysis, Data curation, Conceptualization. Harashta Tatimma Larasati: Writing – review & editing, Writing 
+– original draft, Validation. Kyung Hyune-Rhee: Supervision, Resources, Project administration, Funding acquisition.
+Declaration of competing interest
+The authors declare that they have no known competing financial interests or personal relationships that could have appeared 
+to influence the work reported in this paper.
+Acknowledgments
+This research was supported as a ‘Technology Commercialization Collaboration Platform Construction, Republic of Korea’ project 
+of the INNOPOLIS FOUNDATION (Project Number: 1711202494). This study also was conducted with the support of RealSecu Small 
+and Medium Business Technology Innovation Development (R&D), Republic of Korea project ‘AI, Security Solution to Block the 
+Leakage of Internal Confidential Information through Machine Learning’ (RS-2024-00514290).
+Data availability
+Data will be made available on request.
+Internet of Things 31 (2025) 101579 
+15 
+
+===== PAGE 16 =====
+M. Firdaus et al.
+References
+[1] J. Xu, B.S. Glicksberg, C. Su, P. Walker, J. Bian, F. Wang, Federated learning for healthcare informatics, J. Heal. Inform. Res. 5 (2021) 1–19.
+[2] G.J. Annas, HIPAA regulations: A new era of medical-record privacy? N. Engl. J. Med. 348 (2003) 1486.
+[3] R.S. Antunes, C. André da Costa, A. Küderle, I.A. Yari, B. Eskofier, Federated learning for healthcare: Systematic review and architecture proposal, ACM 
+Trans. Intell. Syst. Technol. (TIST) 13 (4) (2022) 1–23.
+[4] M. Joshi, A. Pal, M. Sankarasubbu, Federated learning for healthcare domain-pipeline, applications and challenges, ACM Trans. Comput. Heal. 3 (4) (2022) 
+1–36.
+[5] H. Li, C. Li, J. Wang, A. Yang, Z. Ma, Z. Zhang, D. Hua, Review on security of federated learning and its application in healthcare, Future Gener. Comput. 
+Syst. 144 (2023) 271–290.
+[6] K. Bonawitz, V. Ivanov, B. Kreuter, A. Marcedone, H.B. McMahan, S. Patel, D. Ramage, A. Segal, K. Seth, Practical secure aggregation for privacy-preserving 
+machine learning, in: Proceedings of the 2017 ACM SIGSAC Conference on Computer and Communications Security, 2017, pp. 1175–1191.
+[7] K. Wei, J. Li, M. Ding, C. Ma, H.H. Yang, F. Farokhi, S. Jin, T.Q. Quek, H.V. Poor, Federated learning with differential privacy: Algorithms and performance 
+analysis, IEEE Trans. Inf. Forensics Secur. 15 (2020) 3454–3469.
+[8] Y. Aono, T. Hayashi, L. Wang, S. Moriai, et al., Privacy-preserving deep learning via additively homomorphic encryption, IEEE Trans. Inf. Forensics Secur. 
+13 (5) (2017) 1333–1345.
+[9] C. Zhang, Y. Xie, H. Bai, B. Yu, W. Li, Y. Gao, A survey on federated learning, Knowl.-Based Syst. 216 (2021) 106775.
+[10] M. Azarm-Daigle, C. Kuziemsky, L. Peyton, A review of cross organizational healthcare data sharing, Procedia Comput. Sci. 63 (2015) 425–432.
+[11] L.B. Elvas, J.C. Ferreira, M.S. Dias, L.B. Rosário, Health data sharing towards knowledge creation, Systems 11 (8) (2023) 435.
+[12] J. Scheibner, J.L. Raisaro, J.R. Troncoso-Pastoriza, M. Ienca, J. Fellay, E. Vayena, J.-P. Hubaux, Revolutionizing medical data sharing using advanced 
+privacy-enhancing technologies: Technical, legal, and ethical synthesis, J. Med. Internet Res. 23 (2) (2021) e25120.
+[13] K. El Emam, E. Jonker, L. Arbuckle, B. Malin, A systematic review of re-identification attacks on health data, PloS One 6 (12) (2011) e28071.
+[14] K. El Emam, L. Arbuckle, G. Koru, B. Eze, L. Gaudette, E. Neri, S. Rose, J. Howard, J. Gluck, De-identification methods for open health data: The case 
+of the heritage health prize claims dataset, J. Med. Internet Res. 14 (1) (2012) e33.
+[15] K. Benitez, B. Malin, Evaluating re-identification risks with respect to the HIPAA privacy rule, J. Am. Med. Inform. Assoc. 17 (2) (2010) 169–177.
+[16] F. Wibawa, F.O. Catak, M. Kuzlu, S. Sarp, U. Cali, Homomorphic encryption and federated learning based privacy-preserving cnn training: Covid-19 
+detection use-case, in: Proceedings of the 2022 European Interdisciplinary Cybersecurity Conference, 2022, pp. 85–90.
+[17] N.M. Hijazi, M. Aloqaily, M. Guizani, B. Ouni, F. Karray, Secure federated learning with fully homomorphic encryption for iot communications, IEEE 
+Internet Things J. (2023).
+[18] A. Acar, H. Aksu, A.S. Uluagac, M. Conti, A survey on homomorphic encryption schemes: Theory and implementation, ACM Comput. Surv. (Csur) 51 (4) 
+(2018) 1–35.
+[19] X. Li, P. Jiang, T. Chen, X. Luo, Q. Wen, A survey on the security of blockchain systems, Future Gener. Comput. Syst. 107 (2020) 841–853.
+[20] J. Yli-Huumo, D. Ko, S. Choi, S. Park, K. Smolander, Where is current research on blockchain technology?—A systematic review, PloS One 11 (10) (2016) 
+e0163477.
+[21] S. Nakamoto, Bitcoin: A peer-to-peer electronic cash system, Decentralized Bus. Rev. (2008).
+[22] M. Firdaus, K.-H. Rhee, Towards trustworthy collaborative healthcare data sharing, in: 2023 IEEE International Conference on Bioinformatics and 
+Biomedicine, BIBM, IEEE, 2023, pp. 4059–4064.
+[23] Z. Zheng, S. Xie, H. Dai, X. Chen, H. Wang, An overview of blockchain technology: Architecture, consensus, and future trends, in: 2017 IEEE International 
+Congress on Big Data (BigData Congress), Ieee, 2017, pp. 557–564.
+[24] M. Szydlo, Merkle tree traversal in log space and time, in: Advances in Cryptology-EUROCRYPT 2004: International Conference on the Theory and 
+Applications of Cryptographic Techniques, Interlaken, Switzerland, May 2-6, 2004. Proceedings 23, Springer, 2004, pp. 541–554.
+[25] B. McMahan, E. Moore, D. Ramage, S. Hampson, B.A. y Arcas, Communication-efficient learning of deep networks from decentralized data, in: Artificial 
+Intelligence and Statistics, PMLR, 2017, pp. 1273–1282.
+[26] X. Zhu, H. Li, Y. Yu, Blockchain-based privacy preserving deep learning, in: International Conference on Information Security and Cryptology, Springer, 
+2018, pp. 370–383.
+[27] H.T. Larasati, M. Firdaus, H. Kim, Quantum federated learning: Remarks and challenges, in: 2022 IEEE 9th International Conference on Cyber Security 
+and Cloud Computing (CSCloud)/2022 IEEE 8th International Conference on Edge Computing and Scalable Cloud (EdgeCom), IEEE, 2022, pp. 1–5.
+[28] A. Hard, K. Rao, R. Mathews, S. Ramaswamy, F. Beaufays, S. Augenstein, H. Eichner, C. Kiddon, D. Ramage, Federated learning for mobile keyboard 
+prediction, 2018, arXiv preprint arXiv:1811.03604.
+[29] M. Chen, R. Mathews, T. Ouyang, F. Beaufays, Federated learning of out-of-vocabulary words, 2019, arXiv preprint arXiv:1903.10635.
+[30] T.S. Brisimi, R. Chen, T. Mela, A. Olshevsky, I.C. Paschalidis, W. Shi, Federated learning of predictive models from federated electronic health records, 
+Int. J. Med. Inform. 112 (2018) 59–67.
+[31] S. Samarakoon, M. Bennis, W. Saad, M. Debbah, Federated learning for ultra-reliable low-latency V2V communications, in: 2018 IEEE Global 
+Communications Conference, GLOBECOM, IEEE, 2018, pp. 1–7.
+[32] S. Boughorbel, F. Jarray, N. Venugopal, S. Moosa, H. Elhadi, M. Makhlouf, Federated uncertainty-aware learning for distributed hospital ehr data, 2019, 
+arXiv preprint arXiv:1910.12191.
+[33] H. Fang, Q. Qian, Privacy preserving machine learning with homomorphic encryption and federated learning, Futur. Internet 13 (4) (2021) 94, 
+http://dx.doi.org/10.3390/fi13040094, URL https://www.mdpi.com/1999-5903/13/4/94.
+[34] N. Wang, W. Yang, X. Wang, L. Wu, Z. Guan, X. Du, M. Guizani, A blockchain based privacy-preserving federated learning scheme for internet of 
+vehicles, Digit. Commun. Netw. 10 (1) (2024) 126–134, http://dx.doi.org/10.1016/j.dcan.2022.05.020, URL https://linkinghub.elsevier.com/retrieve/pii/
+S2352864822001134.
+[35] S.A. Rieyan, M.R.K. News, A.M. Rahman, S.A. Khan, S.T.J. Zaarif, M.G.R. Alam, M.M. Hassan, M. Ianni, G. Fortino, An advanced data fabric architecture 
+leveraging homomorphic encryption and federated learning, Inf. Fusion 102 (2024) 102004.
+[36] K. Zhao, X.A. Wang, B. Yang, Y. Tian, J. Zhang, A privacy preserving homomorphic computing toolkit for predictive computation, Inf. Process. Manage. 
+59 (2) (2022) 102880.
+[37] D. Huang, Q. Gan, X. Wang, M.R. Ogiela, X.A. Wang, Privacy preserving IoT-based crowd-sensing network with comparable homomorphic encryption and 
+its application in combating COVID19, Internet Things 20 (2022) 100625.
+[38] Y. Su, X.A. Wang, W. Du, Y. Ge, K. Zhao, M. Lv, A secure data fitting scheme based on CKKS homomorphic encryption for medical IoT, J. High Speed 
+Netw. 29 (1) (2023) 41–56.
+[39] H. Wang, Z. Kaplan, D. Niu, B. Li, Optimizing federated learning on non-iid data with reinforcement learning, in: IEEE INFOCOM 2020-IEEE Conference 
+on Computer Communications, IEEE, 2020, pp. 1698–1707.
+[40] R. Yang, T. Zhao, F.R. Yu, M. Li, D. Zhang, X. Zhao, Blockchain-based federated learning with enhanced privacy and security using homomorphic encryption 
+and reputation, IEEE Internet Things J. (2024).
+Internet of Things 31 (2025) 101579 
+16 
+
+===== PAGE 17 =====
+M. Firdaus et al.
+[41] M. Firdaus, S. Noh, Z. Qian, K.-H. Rhee, BPFL: Blockchain-enabled distributed edge cluster for personalized federated learning, in: International Conference 
+on Computer Science and Its Applications and the International Conference on Ubiquitous Information Technologies and Applications, Springer, 2022, pp. 
+431–437.
+[42] F. Sattler, K.-R. Müller, W. Samek, Clustered federated learning: Model-agnostic distributed multitask optimization under privacy constraints, IEEE Trans. 
+Neural Netw. Learn. Syst. 32 (8) (2020) 3710–3722.
+[43] Y. Lu, X. Huang, Y. Dai, S. Maharjan, Y. Zhang, Blockchain and federated learning for privacy-preserved data sharing in industrial IoT, IEEE Trans. Ind. 
+Inform. 16 (6) (2019) 4177–4186.
+[44] T. Rahman, A. Khandakar, Y. Qiblawey, A. Tahir, S. Kiranyaz, S.B.A. Kashem, M.T. Islam, S. Al Maadeed, S.M. Zughaier, M.S. Khan, et al., Exploring the 
+effect of image enhancement techniques on COVID-19 detection using chest X-ray images, Comput. Biol. Med. 132 (2021) 104319.
+[45] M. Nickparvar, Brain tumor MRI dataset, 2021, http://dx.doi.org/10.34740/KAGGLE/DSV/2645886, URL https://www.kaggle.com/dsv/2645886.
+[46] Microsoft SEAL (release 4.1), 2023, https://github.com/Microsoft/SEAL. Microsoft Research, Redmond, WA.
+[47] A. Ibarrondo, A. Viand, Pyfhel: Python for homomorphic encryption libraries, in: Proceedings of the 9th on Workshop on Encrypted Computing & Applied 
+Homomorphic Cryptography, 2021, pp. 11–16.
+[48] M. Naehrig, K. Lauter, V. Vaikuntanathan, Can homomorphic encryption be practical? in: Proceedings of the 3rd ACM Workshop on Cloud Computing 
+Security Workshop, 2011, pp. 113–124.
+Internet of Things 31 (2025) 101579 
+17 
